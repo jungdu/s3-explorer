@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { S3Store } from "../stores/s3";
+import { S3Store } from "./s3";
 
 function createConnector<T>(storeClass: new () => T) {
   const store: T = new storeClass();
