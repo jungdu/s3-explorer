@@ -1,11 +1,11 @@
 import React from "react";
 import GlobalStyles from "./GlobalStyles";
-import BucketsContainer from "./BucketsContainer";
+import { BucketContainer } from "./Bucket";
 
 const Application: React.FC = () => (
   <>
     <GlobalStyles />
-    <BucketsContainer></BucketsContainer>
+    <BucketContainer></BucketContainer>
   </>
 );
 
