@@ -29,5 +29,6 @@ module.exports = {
         "prettier"
     ],
     "rules": {
+        "react/prop-types": "off"
     }
 };
