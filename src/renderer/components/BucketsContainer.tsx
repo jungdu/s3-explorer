@@ -1,8 +1,15 @@
 import React from "react";
+import { useObserver } from "mobx-react";
+
+import { useS3Store } from "../stores/s3";
 import Buckets from "./Buckets";
 
 const BucketsContainer: React.FC = () => {
-  return <Buckets bucketNames={["image", "mp3", "videos"]}></Buckets>;
+  const s3Store = useS3Store();
+
+  return useObserver(() => (
+    <Buckets bucketNames={s3Store.bucketNames}></Buckets>
+  ));
 };
 
 export default BucketsContainer;

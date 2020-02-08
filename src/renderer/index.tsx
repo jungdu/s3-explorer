@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { AppContainer } from "react-hot-loader";
 
+import { S3Provider } from "./stores/s3";
 import Application from "./components/Application";
 
 // Create main element
@@ -10,7 +11,9 @@ document.body.appendChild(mainElement);
 
 ReactDOM.render(
   <AppContainer>
-    <Application />
+    <S3Provider>
+      <Application />
+    </S3Provider>
   </AppContainer>,
   mainElement
 );
