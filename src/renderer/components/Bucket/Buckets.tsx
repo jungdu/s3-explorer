@@ -1,11 +1,12 @@
 import React from "react";
 
 interface Props {
-  loading: boolean;
   bucketNames: Array<string>;
+  loading: boolean;
+  onBucketClick: (bucketName: string) => void;
 }
 
-const Buckets: React.FC<Props> = ({ loading, bucketNames }) => {
+const Buckets: React.FC<Props> = ({ bucketNames, loading, onBucketClick }) => {
   return (
     <div>
       <h1>Buckets</h1>
@@ -13,7 +14,16 @@ const Buckets: React.FC<Props> = ({ loading, bucketNames }) => {
         {loading ? (
           <li>Loading...</li>
         ) : (
-          bucketNames.map(bucketName => <li key={bucketName}>{bucketName}</li>)
+          bucketNames.map(bucketName => (
+            <li
+              key={bucketName}
+              onClick={() => {
+                onBucketClick(bucketName);
+              }}
+            >
+              {bucketName}
+            </li>
+          ))
         )}
       </ul>
     </div>

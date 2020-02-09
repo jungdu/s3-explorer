@@ -9,8 +9,11 @@ const BucketsContainer: React.FC = () => {
 
   return useObserver(() => (
     <Buckets
-      loading={s3Store.loading}
       bucketNames={s3Store.bucketNames}
+      loading={s3Store.loading}
+      onBucketClick={bucketName => {
+        s3Store.selectBucket(bucketName);
+      }}
     ></Buckets>
   ));
 };
