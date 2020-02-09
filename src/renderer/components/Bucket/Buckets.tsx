@@ -1,17 +1,20 @@
 import React from "react";
 
 interface Props {
+  bucketLoading: boolean;
   bucketNames: Array<string>;
 }
 
-const Buckets: React.FC<Props> = ({ bucketNames }) => {
+const Buckets: React.FC<Props> = ({ bucketLoading, bucketNames }) => {
   return (
     <div>
       <h1>Buckets</h1>
       <ul>
-        {bucketNames.map(bucketName => (
-          <li key={bucketName}>{bucketName}</li>
-        ))}
+        {bucketLoading ? (
+          <li>Loading...</li>
+        ) : (
+          bucketNames.map(bucketName => <li key={bucketName}>{bucketName}</li>)
+        )}
       </ul>
     </div>
   );

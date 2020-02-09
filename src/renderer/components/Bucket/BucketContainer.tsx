@@ -8,7 +8,10 @@ const BucketsContainer: React.FC = () => {
   const s3Store = s3.useStore();
 
   return useObserver(() => (
-    <Buckets bucketNames={s3Store.bucketNames}></Buckets>
+    <Buckets
+      bucketLoading={s3Store.bucketLoading}
+      bucketNames={s3Store.bucketNames}
+    ></Buckets>
   ));
 };
 
