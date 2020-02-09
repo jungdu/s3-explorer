@@ -1,16 +1,82 @@
 import AWS from "aws-sdk";
-import S3, { Buckets } from "aws-sdk/clients/s3";
+import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 
-import { notUndefined } from "../typeGuards";
+import { notNull, notUndefined } from "../typeGuards";
+
+interface NodeNames {
+  fileNames: FileNames;
+  folderNames: FolderNames;
+}
 
 export type BucketNames = Array<string>;
+type FileNames = Array<string>;
+type FolderNames = Array<string>;
 
 export class S3Ctl {
   private s3: S3 | null = null;
-  buckets: Buckets = [];
 
-  get bucketNames(): BucketNames {
-    return this.buckets.map(bucket => bucket.Name).filter(notUndefined);
+  private getBucketNames(listBucketsOutput: ListBucketsOutput): BucketNames {
+    const buckets = listBucketsOutput.Buckets;
+    if (buckets) {
+      return buckets.map(bucket => bucket.Name).filter(notUndefined);
+    }
+    return [];
+  }
+
+  private getFileAndFolderNames(
+    listObjectsV2Output: ListObjectsV2Output
+  ): NodeNames {
+    return {
+      fileNames: this.getFileNames(listObjectsV2Output),
+      folderNames: this.getFolderNames(listObjectsV2Output)
+    };
+  }
+
+  private getFileNames(listObjectsV2Output: ListObjectsV2Output): FileNames {
+    const { Contents } = listObjectsV2Output;
+    if (Contents) {
+      return Contents.map(content => content.Key).filter(notUndefined);
+    }
+    return [];
+  }
+
+  private getFolderNames(
+    listObjectsV2Output: ListObjectsV2Output
+  ): FolderNames {
+    const { CommonPrefixes } = listObjectsV2Output;
+    if (CommonPrefixes) {
+      return CommonPrefixes.map(prefix => prefix.Prefix).filter(notUndefined);
+    }
+    return [];
+  }
+
+  private getObjectInBucket(bucketName: string, prefix: string) {
+    return new Promise<ListObjectsV2Output>((resolve, reject) => {
+      if (notNull(this.s3)) {
+        this.s3.listObjectsV2(
+          {
+            Bucket: bucketName,
+            Delimiter: "/",
+            Prefix: prefix,
+            StartAfter: prefix
+          },
+          (err, data) => {
+            if (err) {
+              reject(new Error(`S3ctl.listObjectV2 error code:${err.code}`));
+            }
+            resolve(data);
+          }
+        );
+      } else {
+        throw new Error("no S3 Object");
+      }
+    });
+  }
+
+  ls(bucketName: string, folderName: string = "") {
+    return this.getObjectInBucket(bucketName, folderName).then(data =>
+      this.getFileAndFolderNames(data)
+    );
   }
 
   setCredential(accessKeyId: string, secretAccessKey: string) {
@@ -22,13 +88,8 @@ export class S3Ctl {
           return reject(new Error(`S3ctl.listBuckets error code:${err.code}`));
         }
 
-        if (data.Buckets) {
-          this.buckets = data.Buckets;
-        }
-
         this.s3 = s3;
-
-        return resolve(this.bucketNames);
+        return resolve(this.getBucketNames(data));
       });
     });
   }
