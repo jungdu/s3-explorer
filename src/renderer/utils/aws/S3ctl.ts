@@ -3,7 +3,7 @@ import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 
 import { notNull, notUndefined } from "../typeGuards";
 
-interface NodeNames {
+export interface FsObjectNames {
   fileNames: FileNames;
   folderNames: FolderNames;
 }
@@ -25,7 +25,7 @@ export class S3Ctl {
 
   private getFileAndFolderNames(
     listObjectsV2Output: ListObjectsV2Output
-  ): NodeNames {
+  ): FsObjectNames {
     return {
       fileNames: this.getFileNames(listObjectsV2Output),
       folderNames: this.getFolderNames(listObjectsV2Output)
@@ -50,15 +50,14 @@ export class S3Ctl {
     return [];
   }
 
-  private getObjectInBucket(bucketName: string, prefix: string) {
+  private getObjectInBucket(bucketName: string) {
     return new Promise<ListObjectsV2Output>((resolve, reject) => {
       if (notNull(this.s3)) {
         this.s3.listObjectsV2(
           {
             Bucket: bucketName,
-            Delimiter: "/",
-            Prefix: prefix,
-            StartAfter: prefix
+            Delimiter: "/"
+            //prefix 가 언제 필요할 때 알아보자
           },
           (err, data) => {
             if (err) {
@@ -73,10 +72,10 @@ export class S3Ctl {
     });
   }
 
-  ls(bucketName: string, folderName: string = "") {
-    return this.getObjectInBucket(bucketName, folderName).then(data =>
-      this.getFileAndFolderNames(data)
-    );
+  ls(bucketName: string, folderName: string = "/") {
+    return this.getObjectInBucket(bucketName, folderName).then(data => {
+      return this.getFileAndFolderNames(data);
+    });
   }
 
   setCredential(accessKeyId: string, secretAccessKey: string) {

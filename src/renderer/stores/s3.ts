@@ -1,11 +1,37 @@
 import { observable, action } from "mobx";
+import dotenv from "dotenv";
 
-import { BucketNames, S3Ctl } from "../utils/aws/S3Ctl";
+dotenv.config();
+
+import { BucketNames, FsObjectNames, S3Ctl } from "../utils/aws/S3Ctl";
 
 const s3Ctl = new S3Ctl();
 export class S3Store {
-  @observable bucketLoading: boolean = false;
+  @observable loading: boolean = false;
   @observable bucketNames: BucketNames = [];
+  @observable fsObjectNames: FsObjectNames = {
+    fileNames: [],
+    folderNames: []
+  };
+
+  @action
+  selectBucket(bucketName: string) {
+    if (bucketName) {
+      s3Ctl.ls(bucketName).then(fsObjectNames => {
+        this.setFsObjectNames(fsObjectNames);
+      });
+    }
+  }
+
+  @action
+  setBucketLoading(loading: boolean) {
+    this.loading = loading;
+  }
+
+  @action
+  setBucketNames(bucketNames: BucketNames) {
+    this.bucketNames = bucketNames;
+  }
 
   setCredential(accessKeyId: string, secretAccessKey: string) {
     this.setBucketLoading(true);
@@ -15,18 +41,15 @@ export class S3Store {
         this.setBucketLoading(false);
         this.setBucketNames(bucketNames);
       })
-      .catch(() => {
+      .catch(err => {
         this.setBucketLoading(false);
+        // TODO 에러 처리
+        throw err;
       });
   }
 
   @action
-  setBucketNames(bucketNames: BucketNames) {
-    this.bucketNames = bucketNames;
-  }
-
-  @action
-  setBucketLoading(bucketLoading: boolean) {
-    this.bucketLoading = bucketLoading;
+  setFsObjectNames(fsObjectNames: FsObjectNames) {
+    this.fsObjectNames = fsObjectNames;
   }
 }

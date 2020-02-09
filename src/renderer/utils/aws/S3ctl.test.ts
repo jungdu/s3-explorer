@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-import { S3Ctl } from "./S3ctl";
+import { S3Ctl } from "./S3Ctl";
 
 dotenv.config();
 
