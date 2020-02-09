@@ -14,7 +14,7 @@ const Credential: React.FC<Props> = ({ onSetCredential }) => {
 
   const handleOnClick = useCallback(() => {
     onSetCredential(accessKeyId, secretAccessKey);
-  }, [onSetCredential]);
+  }, [accessKeyId, onSetCredential, secretAccessKey]);
 
   return (
     <div>

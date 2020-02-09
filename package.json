@@ -123,6 +123,7 @@
   },
   "dependencies": {
     "@types/node": "^13.1.6",
+    "aws-sdk": "^2.614.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.7",
     "react": "^16.8.6",

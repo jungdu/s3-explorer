@@ -1,10 +1,13 @@
 import React from "react";
-import GlobalStyles from "./GlobalStyles";
+
 import { BucketContainer } from "./Bucket";
+import { CredentialContainer } from "./Credential";
+import GlobalStyles from "./GlobalStyles";
 
 const Application: React.FC = () => (
   <>
     <GlobalStyles />
+    <CredentialContainer></CredentialContainer>
     <BucketContainer></BucketContainer>
   </>
 );
