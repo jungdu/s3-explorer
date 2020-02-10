@@ -38,19 +38,21 @@ describe("S3test with AWS SDK", () => {
     });
   });
 
-  test('Execute "ls" command in the first bucket', () => {
-    return s3Controller.ls(TEST_BUCKET).then(data => {
-      expect(Array.isArray(data.fileNames)).toBe(true);
-      expect(data.fileNames).toContain(TEST_FILE_IN_ROOT);
-      expect(Array.isArray(data.folderNames)).toBe(true);
-      expect(data.folderNames).toContain(TEST_FOLDER_IN_ROOT);
+  test('Execute "ls" command in the test bucket', () => {
+    return s3Controller.ls(TEST_BUCKET).then(fsObjects => {
+      expect(Array.isArray(fsObjects)).toBe(true);
+      console.log("fsObjects :", fsObjects);
+      const objectNames = fsObjects.map(fsObject => fsObject.name);
+      expect(objectNames).toContain(TEST_FILE_IN_ROOT);
+      expect(objectNames).toContain(TEST_FOLDER_IN_ROOT);
     });
   });
 
   test(`Execute "ls" a folder`, () => {
-    return s3Controller.ls(TEST_BUCKET, TEST_FOLDER_IN_ROOT).then(data => {
-      expect(Array.isArray(data.fileNames)).toBe(true);
-      expect(data.fileNames).toContain(TEST_FILE_IN_FOLDER_IN_ROOT);
+    return s3Controller.ls(TEST_BUCKET, TEST_FOLDER_IN_ROOT).then(fsObjects => {
+      expect(Array.isArray(fsObjects)).toBe(true);
+      const objectNames = fsObjects.map(fsObject => fsObject.name);
+      expect(objectNames).toContain(TEST_FILE_IN_FOLDER_IN_ROOT);
     });
   });
 });

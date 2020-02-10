@@ -3,14 +3,25 @@ import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 
 import { notNull, notUndefined } from "../typeGuards";
 
-export interface FsObjectNames {
-  fileNames: FileNames;
-  folderNames: FolderNames;
+enum FsType {
+  file,
+  folder
+}
+
+export interface FsObject {
+  type: FsType;
+  name: string;
+}
+
+interface File extends FsObject {
+  type: FsType.file;
+}
+
+interface Folder extends FsObject {
+  type: FsType.folder;
 }
 
 export type BucketNames = Array<string>;
-type FileNames = Array<string>;
-type FolderNames = Array<string>;
 
 export default class S3Controller {
   private s3: S3 | null = null;
@@ -23,34 +34,47 @@ export default class S3Controller {
     return [];
   }
 
-  private getFileAndFolderNames(
+  private getFsObjects(
     listObjectsV2Output: ListObjectsV2Output
-  ): FsObjectNames {
-    return {
-      fileNames: this.getFileNames(listObjectsV2Output),
-      folderNames: this.getFolderNames(listObjectsV2Output)
-    };
+  ): Array<FsObject> {
+    const folders = this.getFolders(listObjectsV2Output);
+    const files = this.getFiles(listObjectsV2Output);
+    return [...folders, ...files];
   }
 
-  private getFileNames(listObjectsV2Output: ListObjectsV2Output): FileNames {
+  private getFiles(listObjectsV2Output: ListObjectsV2Output): Array<File> {
     const { Contents } = listObjectsV2Output;
+    const result: Array<File> = [];
     if (Contents) {
-      return Contents.map(content => content.Key).filter(notUndefined);
+      Contents.forEach(content => {
+        if (content.Key) {
+          result.push({
+            type: FsType.file,
+            name: content.Key
+          });
+        }
+      });
     }
-    return [];
+    return result;
   }
 
-  private getFolderNames(
-    listObjectsV2Output: ListObjectsV2Output
-  ): FolderNames {
+  private getFolders(listObjectsV2Output: ListObjectsV2Output): Array<Folder> {
     const { CommonPrefixes } = listObjectsV2Output;
+    const result: Array<Folder> = [];
     if (CommonPrefixes) {
-      return CommonPrefixes.map(prefix => prefix.Prefix).filter(notUndefined);
+      CommonPrefixes.forEach(prefix => {
+        if (prefix.Prefix) {
+          result.push({
+            type: FsType.folder,
+            name: prefix.Prefix
+          });
+        }
+      });
     }
-    return [];
+    return result;
   }
 
-  private getObjectInBucket(bucketName: string, prefix: string) {
+  private getListObjects(bucketName: string, prefix: string) {
     return new Promise<ListObjectsV2Output>((resolve, reject) => {
       if (notNull(this.s3)) {
         this.s3.listObjectsV2(
@@ -73,9 +97,9 @@ export default class S3Controller {
     });
   }
 
-  ls(bucketName: string, folderName: string = "") {
-    return this.getObjectInBucket(bucketName, folderName).then(data =>
-      this.getFileAndFolderNames(data)
+  ls(bucketName: string, folderName: string = ""): Promise<Array<FsObject>> {
+    return this.getListObjects(bucketName, folderName).then(data =>
+      this.getFsObjects(data)
     );
   }
 
