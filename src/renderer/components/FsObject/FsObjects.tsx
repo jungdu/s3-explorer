@@ -1,13 +1,13 @@
 import React from "react";
-
+import { FsObject } from "../../utils/aws/S3Controller";
 interface Props {
   loading: boolean;
-  fsObjectNames: Array<string>;
+  fsObjects: Array<FsObject>;
   onClickFsObject: (idx: number) => void;
 }
 
 const FsObjects: React.FC<Props> = ({
-  fsObjectNames,
+  fsObjects,
   loading,
   onClickFsObject
 }) => {
@@ -18,14 +18,14 @@ const FsObjects: React.FC<Props> = ({
         <div>Loading...</div>
       ) : (
         <ul>
-          {fsObjectNames.map((objectName, i) => (
+          {fsObjects.map((object, i) => (
             <li
-              key={objectName}
+              key={object.name}
               onClick={() => {
                 onClickFsObject(i);
               }}
             >
-              {objectName}
+              {object.name}
             </li>
           ))}
         </ul>

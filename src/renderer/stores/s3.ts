@@ -3,25 +3,19 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import S3Controller, {
-  BucketNames,
-  FsObjectNames
-} from "../utils/aws/S3Controller";
+import S3Controller, { BucketNames, FsObject } from "../utils/aws/S3Controller";
 
-const s3Ctl = new S3Controller();
+const s3Controller = new S3Controller();
 export class S3Store {
-  @observable loading: boolean = false;
   @observable bucketNames: BucketNames = [];
-  @observable fsObjectNames: FsObjectNames = {
-    fileNames: [],
-    folderNames: []
-  };
+  @observable loading: boolean = false;
+  @observable fsObjects: Array<FsObject> = [];
 
   @action
   selectBucket(bucketName: string) {
     if (bucketName) {
-      s3Ctl.ls(bucketName).then(fsObjectNames => {
-        this.setFsObjectNames(fsObjectNames);
+      s3Controller.ls(bucketName).then(fsObjects => {
+        this.setFsObjets(fsObjects);
       });
     }
   }
@@ -38,7 +32,7 @@ export class S3Store {
 
   setCredential(accessKeyId: string, secretAccessKey: string) {
     this.setBucketLoading(true);
-    return s3Ctl
+    return s3Controller
       .setCredential(accessKeyId, secretAccessKey)
       .then(bucketNames => {
         this.setBucketLoading(false);
@@ -52,7 +46,7 @@ export class S3Store {
   }
 
   @action
-  setFsObjectNames(fsObjectNames: FsObjectNames) {
-    this.fsObjectNames = fsObjectNames;
+  setFsObjets(fsObjects: Array<FsObject>) {
+    this.fsObjects = fsObjects;
   }
 }
