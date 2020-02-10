@@ -3,9 +3,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import { BucketNames, FsObjectNames, S3Ctl } from "../utils/aws/S3Ctl";
+import S3Controller, {
+  BucketNames,
+  FsObjectNames
+} from "../utils/aws/S3Controller";
 
-const s3Ctl = new S3Ctl();
+const s3Ctl = new S3Controller();
 export class S3Store {
   @observable loading: boolean = false;
   @observable bucketNames: BucketNames = [];

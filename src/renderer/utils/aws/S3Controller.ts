@@ -12,7 +12,7 @@ export type BucketNames = Array<string>;
 type FileNames = Array<string>;
 type FolderNames = Array<string>;
 
-export class S3Ctl {
+export default class S3Controller {
   private s3: S3 | null = null;
 
   private getBucketNames(listBucketsOutput: ListBucketsOutput): BucketNames {
@@ -50,14 +50,15 @@ export class S3Ctl {
     return [];
   }
 
-  private getObjectInBucket(bucketName: string) {
+  private getObjectInBucket(bucketName: string, prefix: string) {
     return new Promise<ListObjectsV2Output>((resolve, reject) => {
       if (notNull(this.s3)) {
         this.s3.listObjectsV2(
           {
             Bucket: bucketName,
-            Delimiter: "/"
-            //prefix 가 언제 필요할 때 알아보자
+            Delimiter: "/",
+            Prefix: prefix,
+            StartAfter: prefix
           },
           (err, data) => {
             if (err) {
@@ -72,10 +73,10 @@ export class S3Ctl {
     });
   }
 
-  ls(bucketName: string, folderName: string = "/") {
-    return this.getObjectInBucket(bucketName, folderName).then(data => {
-      return this.getFileAndFolderNames(data);
-    });
+  ls(bucketName: string, folderName: string = "") {
+    return this.getObjectInBucket(bucketName, folderName).then(data =>
+      this.getFileAndFolderNames(data)
+    );
   }
 
   setCredential(accessKeyId: string, secretAccessKey: string) {
