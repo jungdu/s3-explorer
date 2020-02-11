@@ -1,9 +1,9 @@
 import React from "react";
-import { FsObject } from "../../utils/aws/S3Controller";
+
 interface Props {
   loading: boolean;
   fsObjects: Array<FsObject>;
-  onClickFsObject: (idx: number) => void;
+  onClickFsObject: (fsObject: FsObject) => void;
 }
 
 const FsObjects: React.FC<Props> = ({
@@ -22,7 +22,7 @@ const FsObjects: React.FC<Props> = ({
             <li
               key={object.name}
               onClick={() => {
-                onClickFsObject(i);
+                onClickFsObject(object);
               }}
             >
               {object.name}

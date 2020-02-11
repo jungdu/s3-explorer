@@ -15,8 +15,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "start": "electron .",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint --fix src/**/*.ts",
+    "lint": "eslint src/**/*",
+    "lint:fix": "eslint --fix src/**/*",
     "pretest:e2e": "npm run build",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
@@ -24,15 +24,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "tsc && lint-staged"
     }
   },
   "lint-staged": {
-    "{src}/**/*.{js,ts,tsx,json,css,scss,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "{src}/**/*.{js,ts,tsx}": [
+    "{src}/**/*.{ts,tsx}": [
       "eslint --fix src/**/*.ts",
       "git add"
     ]

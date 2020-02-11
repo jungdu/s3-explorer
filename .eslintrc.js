@@ -31,5 +31,10 @@ module.exports = {
     "rules": {
         "react/prop-types": "off",
         '@typescript-eslint/no-unused-vars': [2, { args: 'none' }]
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
     }
 };

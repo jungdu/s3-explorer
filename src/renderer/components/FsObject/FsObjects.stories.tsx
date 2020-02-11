@@ -1,6 +1,6 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
-import { array, boolean, withKnobs } from "@storybook/addon-knobs";
+import { object, boolean, withKnobs } from "@storybook/addon-knobs";
 
 import FsObjects from "./FsObjects";
 
@@ -12,15 +12,14 @@ export default {
 
 export const fsObjects = () => {
   const loading = boolean("loading", false);
-  const fsObjectNames = array("fsObjectNames", [
-    "name.txt",
-    "song.mp3",
-    "video.mp4"
-  ]);
+  const firstFsObject: FsObject = object("fsObjects[0]", {
+    type: FsType.FILE,
+    name: "music.mp3"
+  });
 
   return (
     <FsObjects
-      fsObjectNames={fsObjectNames}
+      fsObjects={[firstFsObject]}
       loading={loading}
       onClickFsObject={action("onClickFsObject")}
     ></FsObjects>
