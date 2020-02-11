@@ -15,3 +15,11 @@ export interface FsFile extends FsObject {
 export interface FsFolder extends FsObject {
   type: FsType.FOLDER;
 }
+
+export function isFile(fsObject: FsObject): fsObject is FsFile {
+  return fsObject.type === FsType.FILE;
+}
+
+export function isFolder(fsObject: FsObject): fsObject is FsFolder {
+  return fsObject.type === FsType.FOLDER;
+}
