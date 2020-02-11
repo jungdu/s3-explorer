@@ -28,8 +28,8 @@
     }
   },
   "lint-staged": {
-    "{src}/**/*.{ts,tsx}": [
-      "eslint --fix src/**/*.ts",
+    "*.{ts,tsx}": [
+      "eslint --fix",
       "git add"
     ]
   },

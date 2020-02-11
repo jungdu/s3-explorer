@@ -18,7 +18,7 @@ const FsObjects: React.FC<Props> = ({
         <div>Loading...</div>
       ) : (
         <ul>
-          {fsObjects.map((object, i) => (
+          {fsObjects.map(object => (
             <li
               key={object.name}
               onClick={() => {
