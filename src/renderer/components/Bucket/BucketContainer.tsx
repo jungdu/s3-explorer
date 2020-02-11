@@ -4,18 +4,18 @@ import { useObserver } from "mobx-react";
 import { s3 } from "../../stores/connectors";
 import Buckets from "./Buckets";
 
-const BucketsContainer: React.FC = () => {
-  const s3Store = s3.useStore();
+const BucketsContainer = useObserver(() => {
+  const { bucketNames, loading, selectBucket } = s3.useStore();
 
-  return useObserver(() => (
+  return (
     <Buckets
-      bucketNames={s3Store.bucketNames}
-      loading={s3Store.loading}
+      bucketNames={bucketNames}
+      loading={loading}
       onBucketClick={bucketName => {
-        s3Store.selectBucket(bucketName);
+        selectBucket(bucketName);
       }}
     ></Buckets>
-  ));
-};
+  );
+});
 
 export default BucketsContainer;
