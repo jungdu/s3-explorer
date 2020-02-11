@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import { AppContainer } from "react-hot-loader";
 
 import Application from "./components/Application";
-import { s3 } from "./stores/connectors";
+import { s3 } from "./stores";
 
 // Create main element
 const mainElement = document.createElement("div");

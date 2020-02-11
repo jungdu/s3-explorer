@@ -1,6 +1,6 @@
 import React from "react";
 
-import { s3 } from "../../stores/connectors";
+import { s3 } from "../../stores";
 import Credential from "./Credential";
 import { useObserver } from "mobx-react";
 

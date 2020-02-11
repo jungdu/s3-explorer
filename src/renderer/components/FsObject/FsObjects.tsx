@@ -1,5 +1,7 @@
 import React from "react";
 
+import { FsObject } from "../../types/fs";
+
 interface Props {
   loading: boolean;
   fsObjects: Array<FsObject>;

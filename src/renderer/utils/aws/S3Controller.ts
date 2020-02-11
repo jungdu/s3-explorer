@@ -1,6 +1,7 @@
 import AWS from "aws-sdk";
 import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 
+import { FsObject, FsFile, FsType, FsFolder } from "../../types/fs";
 import { notNull, notUndefined } from "../typeGuards";
 
 export type BucketNames = Array<string>;
@@ -48,10 +49,11 @@ export default class S3Controller {
     if (CommonPrefixes) {
       CommonPrefixes.forEach(prefix => {
         if (prefix.Prefix) {
-          result.push({
-            type: FsType.FODLER,
+          const folder: FsFolder = {
+            type: FsType.FOLDER,
             name: prefix.Prefix
-          });
+          };
+          result.push(folder);
         }
       });
     }

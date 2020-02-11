@@ -2,6 +2,7 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import { object, boolean, withKnobs } from "@storybook/addon-knobs";
 
+import { FsType, FsObject } from "../../types/fs";
 import FsObjects from "./FsObjects";
 
 export default {
