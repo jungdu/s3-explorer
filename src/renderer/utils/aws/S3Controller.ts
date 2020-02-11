@@ -3,24 +3,6 @@ import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 
 import { notNull, notUndefined } from "../typeGuards";
 
-enum FsType {
-  file,
-  folder
-}
-
-export interface FsObject {
-  type: FsType;
-  name: string;
-}
-
-interface File extends FsObject {
-  type: FsType.file;
-}
-
-interface Folder extends FsObject {
-  type: FsType.folder;
-}
-
 export type BucketNames = Array<string>;
 
 export default class S3Controller {
@@ -42,14 +24,14 @@ export default class S3Controller {
     return [...folders, ...files];
   }
 
-  private getFiles(listObjectsV2Output: ListObjectsV2Output): Array<File> {
+  private getFiles(listObjectsV2Output: ListObjectsV2Output): Array<FsFile> {
     const { Contents } = listObjectsV2Output;
-    const result: Array<File> = [];
+    const result: Array<FsFile> = [];
     if (Contents) {
       Contents.forEach(content => {
         if (content.Key) {
           result.push({
-            type: FsType.file,
+            type: FsType.FILE,
             name: content.Key
           });
         }
@@ -58,14 +40,16 @@ export default class S3Controller {
     return result;
   }
 
-  private getFolders(listObjectsV2Output: ListObjectsV2Output): Array<Folder> {
+  private getFolders(
+    listObjectsV2Output: ListObjectsV2Output
+  ): Array<FsFolder> {
     const { CommonPrefixes } = listObjectsV2Output;
-    const result: Array<Folder> = [];
+    const result: Array<FsFolder> = [];
     if (CommonPrefixes) {
       CommonPrefixes.forEach(prefix => {
         if (prefix.Prefix) {
           result.push({
-            type: FsType.folder,
+            type: FsType.FODLER,
             name: prefix.Prefix
           });
         }

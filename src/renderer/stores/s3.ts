@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-import S3Controller, { BucketNames, FsObject } from "../utils/aws/S3Controller";
+import S3Controller, { BucketNames } from "../utils/aws/S3Controller";
 
 const s3Controller = new S3Controller();
 export class S3Store {
