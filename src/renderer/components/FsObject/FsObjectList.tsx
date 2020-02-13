@@ -12,6 +12,7 @@ const Self = styled.div`
 
 const FsObjectItemStyle = css`
   cursor: pointer;
+  user-select: none;
 `;
 
 const FileItem = styled.li`
