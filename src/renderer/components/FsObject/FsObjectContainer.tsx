@@ -3,14 +3,14 @@ import { useObserver } from "mobx-react";
 
 import { isFolder } from "../../types/fs";
 import { s3 } from "../../stores";
-import FsObjects from "./FsObjects";
+import FsObjectList from "./FsObjectList";
 
 const FsObjectContainer: React.FC = () =>
   useObserver(() => {
     const { fsObjects, openFolder } = s3.useStore();
 
     return (
-      <FsObjects
+      <FsObjectList
         fsObjects={fsObjects}
         loading={false}
         onClickFsObject={object => {
@@ -18,7 +18,7 @@ const FsObjectContainer: React.FC = () =>
             openFolder(object);
           }
         }}
-      ></FsObjects>
+      />
     );
   });
 
