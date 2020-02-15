@@ -23,22 +23,26 @@ export const fsObjectList = () => {
     {
       id: nanoid(),
       type: FsType.FOLDER,
-      name: "new-folder"
+      name: "new-folder",
+      children: []
     },
     {
       id: nanoid(),
       type: FsType.FOLDER,
-      name: "second-folder"
+      name: "second-folder",
+      children: []
     },
     {
       id: nanoid(),
       type: FsType.FOLDER,
-      name: "third-folder"
+      name: "third-folder",
+      children: []
     },
     {
       id: nanoid(),
       type: FsType.FOLDER,
-      name: "last-folder"
+      name: "last-folder",
+      children: []
     }
   ];
 

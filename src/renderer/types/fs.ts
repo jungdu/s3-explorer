@@ -3,20 +3,22 @@ export enum FsType {
   FOLDER = "FOLDER"
 }
 
-export interface FsObject {
+export interface FsCommonFiled {
   id: string;
   name: string;
   type: FsType;
 }
 
-export interface FsFile extends FsObject {
+export interface FsFile extends FsCommonFiled {
   type: FsType.FILE;
 }
 
-export interface FsFolder extends FsObject {
+export interface FsFolder extends FsCommonFiled {
   type: FsType.FOLDER;
   children: Array<FsObject>;
 }
+
+export type FsObject = FsFile | FsFolder;
 
 export interface IFsContorller {
   ls: (bucketName: string, folderName?: string) => Promise<Array<FsObject>>;
