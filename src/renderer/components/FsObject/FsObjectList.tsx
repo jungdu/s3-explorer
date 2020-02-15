@@ -44,7 +44,7 @@ const FsObjectList: React.FC<Props> = ({
           {fsObjects.map(object =>
             object.type === FsType.FILE ? (
               <FileItem
-                key={object.name}
+                key={object.id}
                 onClick={() => {
                   onClickFsObject(object);
                 }}
@@ -53,7 +53,7 @@ const FsObjectList: React.FC<Props> = ({
               </FileItem>
             ) : (
               <FolderItem
-                key={object.name}
+                key={object.id}
                 onClick={() => {
                   onClickFsObject(object);
                 }}

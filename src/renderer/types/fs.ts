@@ -4,8 +4,9 @@ export enum FsType {
 }
 
 export interface FsObject {
-  type: FsType;
+  id: string;
   name: string;
+  type: FsType;
 }
 
 export interface FsFile extends FsObject {

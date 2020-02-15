@@ -1,4 +1,5 @@
 import React from "react";
+import nanoid from "nanoid";
 import { action } from "@storybook/addon-actions";
 import { boolean, object, withKnobs } from "@storybook/addon-knobs";
 
@@ -14,23 +15,28 @@ export default {
 export const fsObjectList = () => {
   const loading = boolean("loading", false);
   const firstFsObject: FsObject = object("fsObjects[0]", {
-    type: FsType.FILE,
-    name: "music.mp3"
+    id: nanoid(),
+    name: "music.mp3",
+    type: FsType.FILE
   });
   const otherFsObjects: Array<FsObject> = [
     {
+      id: nanoid(),
       type: FsType.FOLDER,
       name: "new-folder"
     },
     {
+      id: nanoid(),
       type: FsType.FOLDER,
       name: "second-folder"
     },
     {
+      id: nanoid(),
       type: FsType.FOLDER,
       name: "third-folder"
     },
     {
+      id: nanoid(),
       type: FsType.FOLDER,
       name: "last-folder"
     }

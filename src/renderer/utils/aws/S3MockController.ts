@@ -1,4 +1,5 @@
 import faker from "faker";
+import nanoid from "nanoid";
 
 import {
   BucketNames,
@@ -14,15 +15,17 @@ const BUCKET_NAMES = ["bucket1", "bucket2", "bucket3"];
 export default class S3MockController implements IS3Controller {
   private getRandomFile(): FsFile {
     return {
-      type: FsType.FILE,
-      name: faker.system.fileName()
+      id: nanoid(),
+      name: faker.system.fileName(),
+      type: FsType.FILE
     };
   }
 
   private getRandomFolder(): FsFolder {
     return {
-      type: FsType.FOLDER,
-      name: faker.lorem.word()
+      id: nanoid(),
+      name: faker.lorem.word(),
+      type: FsType.FOLDER
     };
   }
 

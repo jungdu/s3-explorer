@@ -1,5 +1,6 @@
 import AWS from "aws-sdk";
 import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
+import nanoid from "nanoid";
 
 import {
   BucketNames,
@@ -37,8 +38,9 @@ export default class S3Controller implements IS3Controller {
       Contents.forEach(content => {
         if (content.Key) {
           result.push({
-            type: FsType.FILE,
-            name: content.Key
+            id: nanoid(),
+            name: content.Key,
+            type: FsType.FILE
           });
         }
       });
@@ -55,8 +57,9 @@ export default class S3Controller implements IS3Controller {
       CommonPrefixes.forEach(prefix => {
         if (prefix.Prefix) {
           const folder: FsFolder = {
-            type: FsType.FOLDER,
-            name: prefix.Prefix
+            id: nanoid(),
+            name: prefix.Prefix,
+            type: FsType.FOLDER
           };
           result.push(folder);
         }
