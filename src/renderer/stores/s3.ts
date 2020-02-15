@@ -1,9 +1,6 @@
 import { observable, action } from "mobx";
-import dotenv from "dotenv";
 
 import { BucketNames, FsObject, FsFolder, IS3Controller } from "../types/fs";
-
-dotenv.config();
 
 export class S3Store {
   s3Controller: IS3Controller;
