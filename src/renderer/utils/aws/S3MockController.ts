@@ -23,6 +23,7 @@ export default class S3MockController implements IS3Controller {
 
   private getRandomFolder(): FsFolder {
     return {
+      children: [],
       id: nanoid(),
       name: faker.lorem.word(),
       type: FsType.FOLDER

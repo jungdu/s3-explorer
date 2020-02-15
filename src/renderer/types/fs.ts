@@ -15,6 +15,7 @@ export interface FsFile extends FsObject {
 
 export interface FsFolder extends FsObject {
   type: FsType.FOLDER;
+  children: Array<FsObject>;
 }
 
 export interface IFsContorller {
