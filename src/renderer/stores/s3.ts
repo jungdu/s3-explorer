@@ -1,13 +1,16 @@
 import { observable, action } from "mobx";
 import dotenv from "dotenv";
 
+import { BucketNames, FsObject, FsFolder, IS3Controller } from "../types/fs";
+
 dotenv.config();
 
-import { FsObject, FsFolder } from "../types/fs";
-import S3Controller, { BucketNames } from "../utils/aws/S3Controller";
-
 export class S3Store {
-  s3Controller = new S3Controller();
+  s3Controller: IS3Controller;
+
+  constructor(s3Controller: IS3Controller) {
+    this.s3Controller = s3Controller;
+  }
 
   @observable bucketNames: BucketNames = [];
   @observable fsObjects: Array<FsObject> = [];

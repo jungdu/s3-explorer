@@ -6,10 +6,12 @@ interface Props {
 
 const Credential: React.FC<Props> = ({ onSetCredential }) => {
   const [accessKeyId, setAccessKeyId] = useState<string>(
-    process.env.DEFAULT_ACCESS_KEY_ID as string
+    process.env.DEFAULT_ACCESS_KEY_ID ? process.env.DEFAULT_ACCESS_KEY_ID : ""
   );
   const [secretAccessKey, setSecretAccessKey] = useState<string>(
-    process.env.DEFAULT_SECRET_ACCESS_KEY as string
+    process.env.DEFAULT_SECRET_ACCESS_KEY
+      ? process.env.DEFAULT_SECRET_ACCESS_KEY
+      : ""
   );
 
   const handleOnClick = useCallback(() => {

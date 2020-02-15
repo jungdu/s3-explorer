@@ -1,12 +1,17 @@
 import AWS from "aws-sdk";
 import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 
-import { FsObject, FsFile, FsType, FsFolder } from "../../types/fs";
+import {
+  BucketNames,
+  FsObject,
+  FsFile,
+  FsType,
+  FsFolder,
+  IS3Controller
+} from "../../types/fs";
 import { notNull, notUndefined } from "../typeGuards";
 
-export type BucketNames = Array<string>;
-
-export default class S3Controller {
+export default class S3Controller implements IS3Controller {
   private s3: S3 | null = null;
 
   private getBucketNames(listBucketsOutput: ListBucketsOutput): BucketNames {

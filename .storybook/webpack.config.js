@@ -1,4 +1,6 @@
-module.exports = ({ config, mode }) => {
+const webpack = require('webpack');
+
+module.exports = ({ config, mode }, env, defaultConfig) => {
   config.module.rules.push({
     test: /\.(ts|tsx)$/,
     use: [
@@ -24,5 +26,10 @@ module.exports = ({ config, mode }) => {
     ]
   });
   config.resolve.extensions.push('.ts', '.tsx');
+  config.plugins.push(
+    new webpack.DefinePlugin({
+      "process.env.ENV":JSON.stringify('storybook')
+    })
+  )
   return config;
 };
