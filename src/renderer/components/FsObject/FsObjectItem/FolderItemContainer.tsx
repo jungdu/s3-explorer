@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 import { FsFolder } from "../../../types/fs";
 
-import { s3 } from "../../../stores";
+import { s3 } from "../../../context";
 import FolderItem from "./FolderItem";
 import { useObserver } from "mobx-react";
 

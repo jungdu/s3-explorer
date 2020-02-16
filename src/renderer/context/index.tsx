@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 
-import { S3Store } from "./s3";
+import { S3Store } from "../stores/s3";
 import S3Controller from "../utils/aws/S3Controller";
 import S3MockController from "../utils/aws/S3MockController";
 

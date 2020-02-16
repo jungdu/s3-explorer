@@ -1,7 +1,7 @@
 import React from "react";
 import { useObserver } from "mobx-react";
 
-import { s3 } from "../../stores";
+import { s3 } from "../../context";
 import FsObjectList from "./FsObjectList";
 
 const FsObjectContainer: React.FC = () =>

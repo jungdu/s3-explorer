@@ -2,7 +2,7 @@ import React from "react";
 import nanoid from "nanoid";
 import { boolean, object, withKnobs } from "@storybook/addon-knobs";
 
-import { s3 } from "../../stores";
+import { s3 } from "../../context";
 import { FsObject, FsType } from "../../types/fs";
 import FsObjectList from "./FsObjectList";
 
