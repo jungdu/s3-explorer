@@ -1,8 +1,8 @@
 import React from "react";
 import nanoid from "nanoid";
-import { action } from "@storybook/addon-actions";
 import { boolean, object, withKnobs } from "@storybook/addon-knobs";
 
+import { s3 } from "../../stores";
 import { FsObject, FsType } from "../../types/fs";
 import FsObjectList from "./FsObjectList";
 
@@ -30,7 +30,18 @@ export const fsObjectList = () => {
       id: nanoid(),
       type: FsType.FOLDER,
       name: "second-folder",
-      children: []
+      children: [
+        {
+          id: nanoid(),
+          name: "video.mp4",
+          type: FsType.FILE
+        },
+        {
+          id: nanoid(),
+          name: "audio.mp3",
+          type: FsType.FILE
+        }
+      ]
     },
     {
       id: nanoid(),
@@ -47,10 +58,11 @@ export const fsObjectList = () => {
   ];
 
   return (
-    <FsObjectList
-      fsObjects={[firstFsObject, ...otherFsObjects]}
-      loading={loading}
-      onClickFsObject={action("onClickFsObject")}
-    />
+    <s3.Provider>
+      <FsObjectList
+        fsObjects={[firstFsObject, ...otherFsObjects]}
+        loading={loading}
+      />
+    </s3.Provider>
   );
 };

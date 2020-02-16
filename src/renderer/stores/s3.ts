@@ -17,7 +17,7 @@ export class S3Store {
   openFolder = (folder: FsFolder) => {
     if (this.selectedBucket) {
       this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
-        this.setFsObjects(fsObjects);
+        this.setChildrenOfFoler(folder, fsObjects);
       });
     } else {
       throw new Error("no selectedBucket");
@@ -62,6 +62,11 @@ export class S3Store {
   @action
   setFsObjects(fsObjects: Array<FsObject>) {
     this.fsObjects = fsObjects;
+  }
+
+  @action
+  setChildrenOfFoler(fsFolder: FsFolder, fsObjects: Array<FsObject>): void {
+    fsFolder.children = fsObjects;
   }
 
   @action

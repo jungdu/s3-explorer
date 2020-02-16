@@ -48,7 +48,7 @@ export default class S3MockController implements IS3Controller {
 
   ls() {
     return new Promise<Array<FsObject>>(resolve => {
-      resolve(this.getRandomFsObjects(50));
+      resolve(this.getRandomFsObjects(20));
     });
   }
 }
