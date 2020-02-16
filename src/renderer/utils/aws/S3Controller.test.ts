@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import fs from "fs";
 
 import S3Controller from "./S3Controller";
 
@@ -12,6 +13,7 @@ dotenv.config();
 
 const TEST_BUCKET = "test-s3-explorer";
 const TEST_FILE_IN_ROOT = "first-file.txt";
+const CONTENT_OF_FILE_IN_ROOT = "first"; // TEST_FILE_IN_ROOT에 쓰여진 내용
 const TEST_FILE_IN_FOLDER_IN_ROOT = "first-folder/file-in-folder.txt";
 const TEST_FOLDER_IN_ROOT = "first-folder/";
 
@@ -53,5 +55,20 @@ describe("S3test with AWS SDK", () => {
       const objectNames = fsObjects.map(fsObject => fsObject.name);
       expect(objectNames).toContain(TEST_FILE_IN_FOLDER_IN_ROOT);
     });
+  });
+
+  test("Download file", () => {
+    const distPath = `${process.cwd()}/download/${TEST_FILE_IN_ROOT}`;
+    return s3Controller
+      .download(TEST_BUCKET, TEST_FILE_IN_ROOT, distPath)
+      .then(fileName => {
+        expect(fileName).toEqual(TEST_FILE_IN_ROOT);
+        expect(fs.readFileSync(distPath, "utf8")).toEqual(
+          CONTENT_OF_FILE_IN_ROOT
+        );
+      })
+      .catch(err => {
+        console.log("err :", err);
+      });
   });
 });

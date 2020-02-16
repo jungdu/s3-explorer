@@ -26,6 +26,11 @@ export type FsObject = FsFile | FsFolder;
 
 export interface IFsContorller {
   ls: (bucketName: string, folderName?: string) => Promise<Array<FsObject>>;
+  download: (
+    bucketName: string,
+    fileName: string,
+    distPath: string
+  ) => Promise<string>;
 }
 
 export interface IS3Controller extends IFsContorller {

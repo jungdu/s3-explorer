@@ -1,5 +1,10 @@
 import AWS from "aws-sdk";
-import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
+import S3, {
+  ListBucketsOutput,
+  ListObjectsV2Output,
+  GetObjectRequest
+} from "aws-sdk/clients/s3";
+import fs from "fs";
 import nanoid from "nanoid";
 
 import {
@@ -86,6 +91,31 @@ export default class S3Controller implements IS3Controller {
             resolve(data);
           }
         );
+      } else {
+        throw new Error("no S3 Object");
+      }
+    });
+  }
+
+  download(
+    bucketName: string,
+    fileName: string,
+    distPath: string
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (notNull(this.s3)) {
+        const params: GetObjectRequest = {
+          Bucket: bucketName,
+          Key: fileName
+        };
+        const s3Stream = this.s3.getObject(params).createReadStream();
+        const fileStream = fs.createWriteStream(distPath);
+        s3Stream.on("error", err => reject(err));
+        fileStream.on("error", err => reject(err));
+        s3Stream.pipe(fileStream);
+        fileStream.on("close", () => {
+          resolve(fileName);
+        });
       } else {
         throw new Error("no S3 Object");
       }

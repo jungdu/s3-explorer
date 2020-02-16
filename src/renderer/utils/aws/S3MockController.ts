@@ -40,6 +40,16 @@ export default class S3MockController implements IS3Controller {
     return result;
   }
 
+  download(
+    bucketName: string,
+    fileName: string,
+    distPath: string
+  ): Promise<string> {
+    return new Promise(resolve => {
+      resolve(distPath);
+    });
+  }
+
   setCredential() {
     return new Promise<BucketNames>(resolve => {
       resolve(BUCKET_NAMES);
