@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 
 module.exports = ({ config, mode }, env, defaultConfig) => {
@@ -26,10 +27,16 @@ module.exports = ({ config, mode }, env, defaultConfig) => {
     ]
   });
   config.resolve.extensions.push('.ts', '.tsx');
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    "@renderer": path.join(__dirname, "..", "src/renderer")
+  }
+
   config.plugins.push(
     new webpack.DefinePlugin({
       "process.env.ENV":JSON.stringify('storybook')
     })
-  )
+  );
+
   return config;
 };
