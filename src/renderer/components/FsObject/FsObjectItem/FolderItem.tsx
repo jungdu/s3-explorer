@@ -5,11 +5,16 @@ import { getNameWithoutPath } from "@renderer/utils/format";
 import { FsObject } from "@renderer/types/fs";
 
 import FsObjectItem from "../FsObjectItem";
+import { itemNameStyle } from "./constant";
 
 const Self = styled.div``;
 
 const Children = styled.ul`
   padding-left: 15px;
+`;
+
+const Name = styled.span`
+  ${itemNameStyle}
 `;
 
 const Icon = styled.span`
@@ -44,7 +49,7 @@ const FsFolderItem: React.FC<Props> = ({ name, fsChildren, onOpenFolder }) => {
         <Icon onClick={handleIconCliked}>
           {opened ? <>&darr;</> : <>&rarr;</>}
         </Icon>
-        {displayedName}
+        <Name>{displayedName}</Name>
       </Self>
       {opened && (
         <Children>

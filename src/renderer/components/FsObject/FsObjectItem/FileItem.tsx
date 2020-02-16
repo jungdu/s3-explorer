@@ -4,9 +4,12 @@ import styled from "styled-components";
 import { FsFile } from "@renderer/types/fs";
 import { getNameWithoutPath } from "@renderer/utils/format";
 
+import { itemNameStyle } from "./constant";
+
 const Self = styled.div``;
 
 const Name = styled.span`
+  ${itemNameStyle}
   margin-left: 20px;
 `;
 
