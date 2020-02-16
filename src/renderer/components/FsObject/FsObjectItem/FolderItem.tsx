@@ -13,6 +13,7 @@ const Children = styled.ul`
 `;
 
 const Icon = styled.span`
+  display: inline-block;
   cursor: pointer;
   width: 15px;
   margin-right: 5px;

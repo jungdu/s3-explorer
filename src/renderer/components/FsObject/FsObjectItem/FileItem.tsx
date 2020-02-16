@@ -6,6 +6,10 @@ import { getNameWithoutPath } from "@renderer/utils/format";
 
 const Self = styled.div``;
 
+const Name = styled.span`
+  margin-left: 20px;
+`;
+
 interface Props {
   fsFile: FsFile;
 }
@@ -15,7 +19,11 @@ const FileItem: React.FC<Props> = ({ fsFile }) => {
     fsFile.name
   ]);
 
-  return <Self>{displayedName}</Self>;
+  return (
+    <Self>
+      <Name>{displayedName}</Name>
+    </Self>
+  );
 };
 
 export default memo(FileItem);
