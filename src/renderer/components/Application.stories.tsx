@@ -2,7 +2,7 @@ import React from "react";
 import { withKnobs } from "@storybook/addon-knobs";
 
 import Application from "./Application";
-import { s3 } from "../context";
+import { s3 } from "@renderer/context";
 
 export default {
   title: "Application|main",

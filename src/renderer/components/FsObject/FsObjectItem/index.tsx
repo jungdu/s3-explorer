@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 
-import { isFolder, FsObject } from "../../../types/fs";
+import { isFolder, FsObject } from "@renderer/types/fs";
+
 import FileItem from "./FileItem";
 import FolderItemContainer from "./FolderItemContainer";
 

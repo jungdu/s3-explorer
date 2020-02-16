@@ -1,7 +1,8 @@
 import React from "react";
 import { useObserver } from "mobx-react";
 
-import { s3 } from "../../context";
+import { s3 } from "@renderer/context";
+
 import Buckets from "./Buckets";
 
 const BucketsContainer: React.FC = () =>

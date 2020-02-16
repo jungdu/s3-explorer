@@ -1,8 +1,8 @@
 import React, { memo, useMemo } from "react";
 import styled from "styled-components";
 
-import { FsFile } from "../../../types/fs";
-import { getNameWithoutPath } from "../../../utils/format";
+import { FsFile } from "@renderer/types/fs";
+import { getNameWithoutPath } from "@renderer/utils/format";
 
 const Self = styled.div``;
 

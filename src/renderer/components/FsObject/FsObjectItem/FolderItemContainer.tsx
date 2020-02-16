@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
-
-import { FsFolder } from "../../../types/fs";
-
-import { s3 } from "../../../context";
-import FolderItem from "./FolderItem";
 import { useObserver } from "mobx-react";
+
+import { s3 } from "@renderer/context";
+import { FsFolder } from "@renderer/types/fs";
+
+import FolderItem from "./FolderItem";
 
 interface Props {
   fsFolder: FsFolder;

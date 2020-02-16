@@ -1,8 +1,8 @@
 import React, { createContext, useContext } from "react";
 
-import { S3Store } from "../stores/s3";
-import S3Controller from "../utils/aws/S3Controller";
-import S3MockController from "../utils/aws/S3MockController";
+import { S3Store } from "@renderer/stores/s3";
+import S3Controller from "@renderer/utils/aws/S3Controller";
+import S3MockController from "@renderer/utils/aws/S3MockController";
 
 function createConnector<T>(storeInstance: T) {
   const context = createContext<T>({} as T);

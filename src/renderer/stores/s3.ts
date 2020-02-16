@@ -1,6 +1,11 @@
 import { observable, action } from "mobx";
 
-import { BucketNames, FsObject, FsFolder, IS3Controller } from "../types/fs";
+import {
+  BucketNames,
+  FsObject,
+  FsFolder,
+  IS3Controller
+} from "@renderer/types/fs";
 
 export class S3Store {
   s3Controller: IS3Controller;

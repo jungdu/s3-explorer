@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -63,5 +64,10 @@ module.exports = merge.smart(baseConfig, {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
         })
-    ]
+    ],
+    resolve: {
+        alias: {
+            "@renderer": path.join(__dirname, "..", "src/renderer")
+        }
+    }
 });

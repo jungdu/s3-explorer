@@ -8,7 +8,7 @@ import {
   FsType,
   FsFolder,
   IS3Controller
-} from "../../types/fs";
+} from "@renderer/types/fs";
 
 const BUCKET_NAMES = ["bucket1", "bucket2", "bucket3"];
 

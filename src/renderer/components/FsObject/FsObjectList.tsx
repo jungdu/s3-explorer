@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-import { FsObject } from "../../types/fs";
+import { FsObject } from "@renderer/types/fs";
+
 import FsObjectItem from "./FsObjectItem";
 
 const Self = styled.div`

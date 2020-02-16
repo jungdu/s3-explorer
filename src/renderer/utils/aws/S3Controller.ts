@@ -9,8 +9,8 @@ import {
   FsType,
   FsFolder,
   IS3Controller
-} from "../../types/fs";
-import { notNull, notUndefined } from "../typeGuards";
+} from "@renderer/types/fs";
+import { notNull, notUndefined } from "@renderer/utils/typeGuards";
 
 export default class S3Controller implements IS3Controller {
   private s3: S3 | null = null;
