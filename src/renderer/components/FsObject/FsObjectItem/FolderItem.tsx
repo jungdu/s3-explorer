@@ -1,6 +1,7 @@
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import styled from "styled-components";
 
+import { getNameWithoutPath } from "../../../utils/format";
 import { FsObject } from "../../../types/fs";
 import FsObjectItem from "../FsObjectItem";
 
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const FsFolderItem: React.FC<Props> = ({ name, fsChildren, onOpenFolder }) => {
+  const displayedName = useMemo(() => getNameWithoutPath(name), [name]);
   const handleIconCliked = useCallback(() => {
     onOpenFolder();
   }, [onOpenFolder]);
@@ -33,7 +35,7 @@ const FsFolderItem: React.FC<Props> = ({ name, fsChildren, onOpenFolder }) => {
         <Icon onClick={handleIconCliked}>
           {fsChildren.length > 0 ? <>&darr;</> : <>&rarr;</>}
         </Icon>
-        {name}
+        {displayedName}
       </Self>
       <Children>
         {fsChildren.map(fsObject => (

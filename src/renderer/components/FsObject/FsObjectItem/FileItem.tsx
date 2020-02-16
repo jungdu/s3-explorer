@@ -1,7 +1,8 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import styled from "styled-components";
 
 import { FsFile } from "../../../types/fs";
+import { getNameWithoutPath } from "../../../utils/format";
 
 const Self = styled.div``;
 
@@ -10,7 +11,11 @@ interface Props {
 }
 
 const FileItem: React.FC<Props> = ({ fsFile }) => {
-  return <Self>{fsFile.name}</Self>;
+  const displayedName = useMemo(() => getNameWithoutPath(fsFile.name), [
+    fsFile.name
+  ]);
+
+  return <Self>{displayedName}</Self>;
 };
 
 export default memo(FileItem);
