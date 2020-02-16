@@ -18,6 +18,13 @@ export class S3Store {
   @observable fsObjects: Array<FsObject> = [];
   @observable loading: boolean = false;
   @observable selectedBucket: string | null = null;
+  selectedObjects: Array<FsObject> = [];
+
+  @action
+  addSelectedObject = (selectedObject: FsObject) => {
+    this.selectedObjects.push(selectedObject);
+    selectedObject.selected = true;
+  };
 
   openFolder = (folder: FsFolder) => {
     if (this.selectedBucket) {
@@ -37,6 +44,16 @@ export class S3Store {
         this.setFsObjects(fsObjects);
       });
     }
+  };
+
+  @action
+  selecteObject = (selectedObject: FsObject) => {
+    const prevSelectedObject = this.selectedObjects;
+    prevSelectedObject.forEach(fsObject => {
+      fsObject.selected = false;
+    });
+    this.selectedObjects = [selectedObject];
+    selectedObject.selected = true;
   };
 
   @action

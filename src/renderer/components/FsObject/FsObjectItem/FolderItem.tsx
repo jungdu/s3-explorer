@@ -27,10 +27,18 @@ const Icon = styled.span`
 interface Props {
   name: string;
   fsChildren: Array<FsObject>;
+  selected: boolean;
+  onClickName: () => void;
   onOpenFolder: () => void;
 }
 
-const FsFolderItem: React.FC<Props> = ({ name, fsChildren, onOpenFolder }) => {
+const FsFolderItem: React.FC<Props> = ({
+  name,
+  fsChildren,
+  selected,
+  onClickName,
+  onOpenFolder
+}) => {
   const [opened, setOpened] = useState<boolean>(false);
 
   const displayedName = useMemo(() => getNameWithoutPath(name), [name]);
@@ -49,7 +57,9 @@ const FsFolderItem: React.FC<Props> = ({ name, fsChildren, onOpenFolder }) => {
         <Icon onClick={handleIconCliked}>
           {opened ? <>&darr;</> : <>&rarr;</>}
         </Icon>
-        <Name>{displayedName}</Name>
+        <Name onClick={onClickName}>
+          {displayedName} {selected ? "선택!" : ""}
+        </Name>
       </Self>
       {opened && (
         <Children>

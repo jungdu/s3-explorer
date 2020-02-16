@@ -3,7 +3,11 @@ export enum FsType {
   FOLDER = "FOLDER"
 }
 
-export interface FsCommonFiled {
+interface Selectable {
+  selected?: boolean;
+}
+
+export interface FsCommonFiled extends Selectable {
   id: string;
   name: string;
   type: FsType;

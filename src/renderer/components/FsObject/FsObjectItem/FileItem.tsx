@@ -1,7 +1,6 @@
 import React, { memo, useMemo } from "react";
 import styled from "styled-components";
 
-import { FsFile } from "@renderer/types/fs";
 import { getNameWithoutPath } from "@renderer/utils/format";
 
 import { itemNameStyle } from "./constant";
@@ -14,17 +13,19 @@ const Name = styled.span`
 `;
 
 interface Props {
-  fsFile: FsFile;
+  name: string;
+  selected: boolean;
+  onClickName: () => void;
 }
 
-const FileItem: React.FC<Props> = ({ fsFile }) => {
-  const displayedName = useMemo(() => getNameWithoutPath(fsFile.name), [
-    fsFile.name
-  ]);
+const FileItem: React.FC<Props> = ({ name, selected, onClickName }) => {
+  const displayedName = useMemo(() => getNameWithoutPath(name), [name]);
 
   return (
     <Self>
-      <Name>{displayedName}</Name>
+      <Name onClick={onClickName}>
+        {displayedName} {selected ? "선택!" : ""}
+      </Name>
     </Self>
   );
 };

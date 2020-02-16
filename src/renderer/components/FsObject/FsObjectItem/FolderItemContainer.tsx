@@ -12,15 +12,21 @@ interface Props {
 
 const FolderItemContainer: React.FC<Props> = ({ fsFolder }) => {
   return useObserver(() => {
-    const { openFolder } = s3.useStore();
+    const { openFolder, selecteObject } = s3.useStore();
+
     const handleOpenFolder = useCallback(() => {
       openFolder(fsFolder);
+    }, [fsFolder]);
+    const handleClickName = useCallback(() => {
+      selecteObject(fsFolder);
     }, [fsFolder]);
 
     return (
       <FolderItem
         name={fsFolder.name}
         fsChildren={fsFolder.children}
+        selected={!!fsFolder.selected}
+        onClickName={handleClickName}
         onOpenFolder={handleOpenFolder}
       />
     );
