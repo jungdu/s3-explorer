@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, MouseEventHandler } from "react";
 import styled from "styled-components";
 
 import { getNameWithoutPath } from "@renderer/utils/format";
@@ -15,7 +15,7 @@ const Name = styled.span`
 interface Props {
   name: string;
   selected: boolean;
-  onClickName: () => void;
+  onClickName: MouseEventHandler;
 }
 
 const FileItem: React.FC<Props> = ({ name, selected, onClickName }) => {

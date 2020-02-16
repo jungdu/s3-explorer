@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, MouseEventHandler } from "react";
 import { useObserver } from "mobx-react";
 
 import { s3 } from "@renderer/context";
@@ -12,11 +12,22 @@ interface Props {
 
 const FileItemContainer: React.FC<Props> = ({ fsFile }) => {
   return useObserver(() => {
-    const { selecteObject } = s3.useStore();
+    const { addSelectedObject, deselectObject, selecteObject } = s3.useStore();
 
-    const handleClickName = useCallback(() => {
-      selecteObject(fsFile);
-    }, [fsFile]);
+    const handleClickName: MouseEventHandler = useCallback(
+      event => {
+        if (event.altKey) {
+          if (fsFile.selected) {
+            deselectObject(fsFile);
+          } else {
+            addSelectedObject(fsFile);
+          }
+        } else {
+          selecteObject(fsFile);
+        }
+      },
+      [fsFile]
+    );
 
     return (
       <FileItem

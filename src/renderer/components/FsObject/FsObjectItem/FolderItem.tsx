@@ -1,4 +1,10 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, {
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+  MouseEventHandler
+} from "react";
 import styled from "styled-components";
 
 import { getNameWithoutPath } from "@renderer/utils/format";
@@ -28,7 +34,7 @@ interface Props {
   name: string;
   fsChildren: Array<FsObject>;
   selected: boolean;
-  onClickName: () => void;
+  onClickName: MouseEventHandler;
   onOpenFolder: () => void;
 }
 

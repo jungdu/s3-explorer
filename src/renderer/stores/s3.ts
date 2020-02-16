@@ -21,9 +21,19 @@ export class S3Store {
   selectedObjects: Array<FsObject> = [];
 
   @action
-  addSelectedObject = (selectedObject: FsObject) => {
-    this.selectedObjects.push(selectedObject);
-    selectedObject.selected = true;
+  addSelectedObject = (fsObject: FsObject) => {
+    this.selectedObjects.push(fsObject);
+    fsObject.selected = true;
+  };
+
+  @action
+  deselectObject = (fsObject: FsObject) => {
+    console.log("this.selectedObjects before :", this.selectedObjects);
+    this.selectedObjects = this.selectedObjects.filter(
+      selectedObject => selectedObject !== fsObject
+    );
+    console.log("this.selectedObjects after :", this.selectedObjects);
+    fsObject.selected = false;
   };
 
   openFolder = (folder: FsFolder) => {
@@ -34,6 +44,13 @@ export class S3Store {
     } else {
       throw new Error("no selectedBucket");
     }
+  };
+
+  @action
+  resetSelectedObjects = () => {
+    this.selectedObjects.forEach(fsObject => {
+      fsObject.selected = false;
+    });
   };
 
   @action
@@ -48,10 +65,7 @@ export class S3Store {
 
   @action
   selecteObject = (selectedObject: FsObject) => {
-    const prevSelectedObject = this.selectedObjects;
-    prevSelectedObject.forEach(fsObject => {
-      fsObject.selected = false;
-    });
+    this.resetSelectedObjects();
     this.selectedObjects = [selectedObject];
     selectedObject.selected = true;
   };
