@@ -6,6 +6,7 @@ import {
   FsFolder,
   IS3Controller
 } from "@renderer/types/fs";
+import { getNameWithoutPath } from "@renderer/utils/format";
 
 export class S3Store {
   s3Controller: IS3Controller;
@@ -19,6 +20,8 @@ export class S3Store {
   @observable loading: boolean = false;
   @observable selectedBucket: string | null = null;
   selectedObjects: Array<FsObject> = [];
+  // TODO 폴더 위치를 정할 수 있도록 하는 부분 추가 해야함
+  selectedFolder: string = "/Users/jangjeongdu/workspace/serious/explorer-s3/";
 
   @action
   addSelectedObject = (fsObject: FsObject) => {
@@ -109,4 +112,25 @@ export class S3Store {
   setSelectedBucket(bucketName: string) {
     this.selectedBucket = bucketName;
   }
+
+  downloadSelectedObject = () => {
+    return Promise.all(
+      this.selectedObjects.map(selectedObj => {
+        if (this.selectedBucket) {
+          if (selectedObj.selected) {
+            selectedObj.name;
+            return this.s3Controller.download(
+              this.selectedBucket,
+              selectedObj.name,
+              `${this.selectedFolder}${getNameWithoutPath(selectedObj.name)}`
+            );
+          } else {
+            throw new Error("SelectedObject isn't selected ");
+          }
+        } else {
+          throw new Error("No Selected bucket");
+        }
+      })
+    ).then(results => console.log("results :", results));
+  };
 }

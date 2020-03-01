@@ -5,6 +5,7 @@ import S3, {
   GetObjectRequest
 } from "aws-sdk/clients/s3";
 import fs from "fs";
+import https from "https";
 import nanoid from "nanoid";
 
 import {
@@ -99,22 +100,28 @@ export default class S3Controller implements IS3Controller {
 
   download(
     bucketName: string,
-    fileName: string,
+    srcFileName: string,
     distPath: string
   ): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       if (notNull(this.s3)) {
         const params: GetObjectRequest = {
           Bucket: bucketName,
-          Key: fileName
+          Key: srcFileName
         };
-        const s3Stream = this.s3.getObject(params).createReadStream();
-        const fileStream = fs.createWriteStream(distPath);
-        s3Stream.on("error", err => reject(err));
-        fileStream.on("error", err => reject(err));
-        s3Stream.pipe(fileStream);
-        fileStream.on("close", () => {
-          resolve(fileName);
+
+        this.s3.getSignedUrlPromise("getObject", params).then(signedUrl => {
+          https.get(signedUrl).on("response", function(res) {
+            const writeStream = fs.createWriteStream(distPath);
+            res
+              .pipe(writeStream)
+              .on("finish", () => {
+                resolve(distPath);
+              })
+              .on("error", err => {
+                reject({ ...err, srcFileName });
+              });
+          });
         });
       } else {
         throw new Error("no S3 Object");
