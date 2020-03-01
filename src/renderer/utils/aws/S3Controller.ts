@@ -130,7 +130,12 @@ export default class S3Controller implements IS3Controller {
 
   setCredential(accessKeyId: string, secretAccessKey: string) {
     return new Promise<BucketNames>((resolve, reject) => {
-      const s3 = new AWS.S3({ accessKeyId, secretAccessKey });
+      const s3 = new AWS.S3({
+        accessKeyId,
+        secretAccessKey,
+        signatureVersion: "v4",
+        region: "ap-northeast-2"
+      });
 
       s3.listBuckets((err, data) => {
         if (err) {
