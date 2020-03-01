@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { FsObject } from "@renderer/types/fs";
+import DownloadButton from "@renderer/components/Button/DownloadButton";
 
 import FsObjectItem from "./FsObjectItem";
 
@@ -20,7 +21,9 @@ interface Props {
 const FsObjectList: React.FC<Props> = ({ fsObjects, loading }) => {
   return (
     <Self>
-      <h1>FsObjects</h1>
+      <h1>
+        FsObjects <DownloadButton />
+      </h1>
       {loading ? (
         <div>Loading...</div>
       ) : (
