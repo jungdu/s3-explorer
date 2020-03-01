@@ -4,24 +4,26 @@ import * as url from "url";
 
 let win: BrowserWindow | null;
 
-const installExtensions = async () => {
-  const installer = require("electron-devtools-installer");
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ["REACT_DEVELOPER_TOOLS"];
-
-  return Promise.all(
-    extensions.map(name => installer.default(installer[name], forceDownload))
-  ).catch(console.log);
-};
+// 이거 없어도 REACT_DEV_TOOLS 가 적용되는데 괜히 재시작만 느리게 만드는 느낌...
+// const installExtensions = async () => {
+// const installer = require("electron-devtools-installer");
+// const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+// const extensions = ["REACT_DEVELOPER_TOOLS"];
+// return Promise.all(
+//   extensions.map(name => installer.default(installer[name], forceDownload))
+// ).catch(console.log);
+// };
 
 const createWindow = async () => {
-  if (process.env.NODE_ENV !== "production") {
-    await installExtensions();
-  }
+  // if (process.env.NODE_ENV !== "production") {
+  //   await installExtensions();
+  // }
 
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    x: 1,
+    y: 10,
+    width: 500,
+    height: 1000,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true
