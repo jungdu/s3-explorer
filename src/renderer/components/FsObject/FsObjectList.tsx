@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 import DownloadButton from "@renderer/components/Button/DownloadButton";
-import DownloadDirectory from "@renderer/components/DownloadFolder";
 import { FsObject } from "@renderer/types/fs";
 
 import FsObjectItem from "./FsObjectItem";
@@ -22,7 +21,6 @@ interface Props {
 const FsObjectList: React.FC<Props> = ({ fsObjects, loading }) => {
   return (
     <Self>
-      <DownloadDirectory />
       <h1>
         FsObjects <DownloadButton />
       </h1>
