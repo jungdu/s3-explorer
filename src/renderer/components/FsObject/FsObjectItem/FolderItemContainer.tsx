@@ -16,7 +16,7 @@ const FolderItemContainer: React.FC<Props> = ({ fsFolder }) => {
       addSelectedObject,
       deselectObject,
       openFolder,
-      selecteObject
+      selectObject
     } = s3.useStore();
 
     const handleOpenFolder = useCallback(() => {
@@ -31,7 +31,7 @@ const FolderItemContainer: React.FC<Props> = ({ fsFolder }) => {
             addSelectedObject(fsFolder);
           }
         } else {
-          selecteObject(fsFolder);
+          selectObject(fsFolder);
         }
       },
       [fsFolder]

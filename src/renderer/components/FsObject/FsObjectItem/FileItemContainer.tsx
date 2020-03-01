@@ -12,7 +12,7 @@ interface Props {
 
 const FileItemContainer: React.FC<Props> = ({ fsFile }) => {
   return useObserver(() => {
-    const { addSelectedObject, deselectObject, selecteObject } = s3.useStore();
+    const { addSelectedObject, deselectObject, selectObject } = s3.useStore();
 
     const handleClickName: MouseEventHandler = useCallback(
       event => {
@@ -23,7 +23,7 @@ const FileItemContainer: React.FC<Props> = ({ fsFile }) => {
             addSelectedObject(fsFile);
           }
         } else {
-          selecteObject(fsFile);
+          selectObject(fsFile);
         }
       },
       [fsFile]

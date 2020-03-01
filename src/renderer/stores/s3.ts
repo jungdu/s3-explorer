@@ -16,6 +16,7 @@ export class S3Store {
   }
 
   @observable bucketNames: BucketNames = [];
+  @observable filesInFolderView: Array<FsObject> = [];
   @observable downloadFolder: string = "";
   @observable fsObjects: Array<FsObject> = [];
   @observable loading: boolean = false;
@@ -42,6 +43,7 @@ export class S3Store {
     if (this.selectedBucket) {
       this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
         this.setChildrenOfFoler(folder, fsObjects);
+        this.setFilesInFolderView(fsObjects);
       });
     } else {
       throw new Error("no selectedBucket");
@@ -60,13 +62,14 @@ export class S3Store {
     if (bucketName) {
       this.s3Controller.ls(bucketName).then(fsObjects => {
         this.setSelectedBucket(bucketName);
+        this.setFilesInFolderView(fsObjects);
         this.setFsObjects(fsObjects);
       });
     }
   };
 
   @action
-  selecteObject = (selectedObject: FsObject) => {
+  selectObject = (selectedObject: FsObject) => {
     this.resetSelectedObjects();
     this.selectedObjects = [selectedObject];
     selectedObject.selected = true;
@@ -100,6 +103,11 @@ export class S3Store {
   @action
   setChildrenOfFoler(fsFolder: FsFolder, fsObjects: Array<FsObject>): void {
     fsFolder.children = fsObjects;
+  }
+
+  @action
+  setFilesInFolderView(fsObjects: Array<FsObject>) {
+    this.filesInFolderView = fsObjects;
   }
 
   @action
