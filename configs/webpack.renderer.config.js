@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const baseConfig = require('./webpack.base.config');
 
@@ -56,6 +57,7 @@ module.exports = merge.smart(baseConfig, {
         ]
     },
     plugins: [
+        new Dotenv(),
         new ForkTsCheckerWebpackPlugin({
             reportFiles: ['src/renderer/**/*']
         }),
