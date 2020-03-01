@@ -16,12 +16,11 @@ export class S3Store {
   }
 
   @observable bucketNames: BucketNames = [];
+  @observable downloadFolder: string = "";
   @observable fsObjects: Array<FsObject> = [];
   @observable loading: boolean = false;
   @observable selectedBucket: string | null = null;
   selectedObjects: Array<FsObject> = [];
-  // TODO 폴더 위치를 정할 수 있도록 하는 부분 추가 해야함
-  selectedFolder: string = "/Users/jangjeongdu/workspace/serious/explorer-s3/";
 
   @action
   addSelectedObject = (fsObject: FsObject) => {
@@ -99,13 +98,18 @@ export class S3Store {
   };
 
   @action
-  setFsObjects(fsObjects: Array<FsObject>) {
-    this.fsObjects = fsObjects;
+  setChildrenOfFoler(fsFolder: FsFolder, fsObjects: Array<FsObject>): void {
+    fsFolder.children = fsObjects;
   }
 
   @action
-  setChildrenOfFoler(fsFolder: FsFolder, fsObjects: Array<FsObject>): void {
-    fsFolder.children = fsObjects;
+  setDownloadFolder = (folder: string) => {
+    this.downloadFolder = folder;
+  };
+
+  @action
+  setFsObjects(fsObjects: Array<FsObject>) {
+    this.fsObjects = fsObjects;
   }
 
   @action
@@ -122,7 +126,7 @@ export class S3Store {
             return this.s3Controller.download(
               this.selectedBucket,
               selectedObj.name,
-              `${this.selectedFolder}${getNameWithoutPath(selectedObj.name)}`
+              `${this.downloadFolder}${getNameWithoutPath(selectedObj.name)}`
             );
           } else {
             throw new Error("SelectedObject isn't selected ");
