@@ -23,7 +23,8 @@ export const folderView = () => {
     {
       id: nanoid(),
       name: "sample-video-1920x820.mp4",
-      type: FsType.FILE
+      type: FsType.FILE,
+      selected: true
     },
     {
       id: nanoid(),
