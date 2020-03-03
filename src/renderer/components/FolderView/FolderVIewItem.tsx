@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import styled, { css } from "styled-components";
 
 import { s3 } from "@renderer/context";
@@ -61,10 +61,23 @@ export interface Props {
 }
 
 const FolderViewItem: React.FC<Props> = ({ fsObject }) => {
-  const { openFolder, selectObject } = s3.useStore();
+  const {
+    addSelectedObject,
+    deselectObject,
+    openFolder,
+    selectObject
+  } = s3.useStore();
 
-  const handleClick = (): void => {
-    selectObject(fsObject);
+  const handleClick: MouseEventHandler = (event): void => {
+    if (event.altKey) {
+      if (fsObject.selected) {
+        deselectObject(fsObject);
+      } else {
+        addSelectedObject(fsObject);
+      }
+    } else {
+      selectObject(fsObject);
+    }
   };
   const handleDoubleClick = () => {
     if (fsObject.type === FsType.FOLDER) {
