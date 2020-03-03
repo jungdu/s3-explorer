@@ -24,7 +24,7 @@ const Item = styled.div<{ selected: boolean }>`
   position: relative;
   display: inline-block;
   padding: 5px;
-  margin: 0 4px 4px;
+  margin: 4px 4px 0 4px;
   cursor: pointer;
 
   &:hover {

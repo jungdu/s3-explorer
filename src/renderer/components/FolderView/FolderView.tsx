@@ -8,6 +8,13 @@ import FolderViewItem from "./FolderViewItem";
 const Self = styled.div`
   width: 100%;
   height: 300px;
+  border: 1px lavender solid;
+`;
+
+const Text = styled.div`
+  color: #555;
+  font-size: 17px;
+  margin: 10px 0 0 10px;
 `;
 
 interface Props {
@@ -38,8 +45,7 @@ const FolderView: React.FC<Props> = ({ fsObjects }) => {
       onDragEnter={handlePreventDefault}
       onDragOver={handlePreventDefault}
     >
-      <h1> FolderView</h1>
-      {fsObjects.length > 0 ? folderViewItems : "선택된 Foldre가 없습니다."}
+      {fsObjects.length > 0 ? folderViewItems : <Text>Empty...</Text>}
     </Self>
   );
 };
