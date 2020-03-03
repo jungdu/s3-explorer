@@ -46,7 +46,8 @@ export default class S3Controller implements IS3Controller {
           result.push({
             id: nanoid(),
             name: content.Key,
-            type: FsType.FILE
+            type: FsType.FILE,
+            selected: false
           });
         }
       });
@@ -66,7 +67,8 @@ export default class S3Controller implements IS3Controller {
             id: nanoid(),
             name: prefix.Prefix,
             type: FsType.FOLDER,
-            children: []
+            children: [],
+            selected: false
           };
           result.push(folder);
         }
