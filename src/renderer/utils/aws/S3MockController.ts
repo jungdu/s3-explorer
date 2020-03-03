@@ -1,18 +1,18 @@
 import faker from "faker";
 import nanoid from "nanoid";
 
+// Mock 개발은 Storybook과 함께 중단...
 import {
   BucketNames,
   FsObject,
   FsFile,
   FsType,
-  FsFolder,
-  IS3Controller
+  FsFolder
 } from "@renderer/types/fs";
 
 const BUCKET_NAMES = ["bucket1", "bucket2", "bucket3"];
 
-export default class S3MockController implements IS3Controller {
+export default class S3MockController {
   private getRandomFile(): FsFile {
     return {
       id: nanoid(),
