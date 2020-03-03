@@ -31,6 +31,7 @@ export interface IFsContorller {
     fileName: string,
     distPath: string
   ) => Promise<string>;
+  upload: (bucketName: string, destDir: string, file: File) => Promise<string>;
 }
 
 export interface IS3Controller extends IFsContorller {

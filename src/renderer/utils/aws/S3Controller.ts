@@ -7,6 +7,7 @@ import S3, {
 import fs from "fs";
 import https from "https";
 import nanoid from "nanoid";
+import path from "path";
 
 import {
   BucketNames,
@@ -153,6 +154,24 @@ export default class S3Controller implements IS3Controller {
 
         this.s3 = s3;
         return resolve(this.getBucketNames(data));
+      });
+    });
+  }
+
+  upload(bucketName: string, destDir: string, file: File) {
+    return new Promise<string>((resolve, reject) => {
+      var params: S3.PutObjectRequest = {
+        Bucket: bucketName,
+        Key: path.join(destDir, file.name),
+        ContentType: file.type,
+        Body: file,
+        ACL: "public-read" // 접근 권한
+      };
+      this.s3?.putObject(params, function(err, data) {
+        if (err) {
+          reject(err);
+        }
+        resolve(data.ETag);
       });
     });
   }

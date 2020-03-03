@@ -27,6 +27,10 @@ describe("S3test with AWS SDK", () => {
     );
   }
 
+  beforeAll(() => {
+    return setDefaultCredential();
+  });
+
   test("Setting credential with default key", () => {
     return setDefaultCredential().then(bucketNames => {
       expect(Array.isArray(bucketNames)).toBe(true);
@@ -71,4 +75,15 @@ describe("S3test with AWS SDK", () => {
         console.log("err :", err);
       });
   });
+
+  // TODO fs로 읽어와서 File로 만든 다음에 테스트 하도록 해야함
+  // test.only("Upload file", () => {
+  //   const sourcePath = path.resolve(__dirname, __filename);
+  //   console.log("sourcePath :", sourcePath);
+  //   return s3Controller
+  //     .upload(TEST_BUCKET, "S3Controller.test1.ts", sourcePath)
+  //     .then(result => {
+  //       console.log("result :", result);
+  //     });
+  // });
 });

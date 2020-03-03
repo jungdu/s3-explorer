@@ -16,6 +16,7 @@ export class S3Store {
   }
 
   @observable bucketNames: BucketNames = [];
+  currentFolder: string = "";
   @observable filesInFolderView: Array<FsObject> = [];
   @observable downloadFolder: string = "";
   @observable fsObjects: Array<FsObject> = [];
@@ -44,6 +45,7 @@ export class S3Store {
       this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
         this.setChildrenOfFoler(folder, fsObjects);
         this.setFilesInFolderView(fsObjects);
+        this.currentFolder = folder.name;
       });
     } else {
       throw new Error("no selectedBucket");
@@ -64,6 +66,7 @@ export class S3Store {
         this.setSelectedBucket(bucketName);
         this.setFilesInFolderView(fsObjects);
         this.setFsObjects(fsObjects);
+        this.currentFolder = "";
       });
     }
   };
@@ -144,5 +147,15 @@ export class S3Store {
         }
       })
     ).then(results => console.log("results :", results));
+  };
+
+  upload = (file: File) => {
+    if (this.selectedBucket) {
+      return this.s3Controller.upload(
+        this.selectedBucket,
+        this.currentFolder,
+        file
+      );
+    }
   };
 }

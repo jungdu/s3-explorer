@@ -1,3 +1,3 @@
-import FolderViewContainer from "./FolderViewContainer";
+import FolderView from "./FolderView";
 
-export { FolderViewContainer };
+export default FolderView;
