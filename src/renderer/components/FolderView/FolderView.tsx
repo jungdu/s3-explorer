@@ -21,7 +21,7 @@ const Text = styled.div`
 
 const FolderView: React.FC = () =>
   useObserver(() => {
-    const { filesInFolderView, upload } = s3.useStore();
+    const { filesInFolderView, uploadFiles } = s3.useStore();
 
     const folderViewItems = filesInFolderView.map((fsObject: FsObject) => (
       <FolderViewItem key={fsObject.id} fsObject={fsObject} />
@@ -31,7 +31,9 @@ const FolderView: React.FC = () =>
       event.preventDefault();
       event.stopPropagation();
       if (event.dataTransfer) {
-        upload(event.dataTransfer.files[0]);
+        uploadFiles(event.dataTransfer.files).then(result => {
+          console.log("result :", result);
+        });
       }
     };
 

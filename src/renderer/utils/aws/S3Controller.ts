@@ -127,7 +127,7 @@ export default class S3Controller implements IS3Controller {
           });
         });
       } else {
-        throw new Error("no S3 Object");
+        reject(new Error("no S3 Object"));
       }
     });
   }
