@@ -2,22 +2,27 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 
 import { s3 } from "@renderer/context";
+import { useObserver } from "mobx-react";
 
 const Self = styled.button`
   cursor: pointer;
-  &:hover {
+  &:active &:hover {
     background-color: #bbb;
   }
 `;
 
 const DownloadButtton: React.FC = () => {
-  const { downloadSelectedObject } = s3.useStore();
+  const { downloadSelectedObject, selectedObjects } = s3.useStore();
 
   const handleOnClick = useCallback(() => {
     downloadSelectedObject();
   }, []);
 
-  return <Self onClick={handleOnClick}>다운로드</Self>;
+  return useObserver(() => (
+    <Self onClick={handleOnClick} disabled={!!selectedObjects}>
+      다운로드
+    </Self>
+  ));
 };
 
 export default DownloadButtton;
