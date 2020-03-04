@@ -24,7 +24,7 @@ export class S3Store {
   @observable fsObjects: Array<FsObject> = [];
   @observable loading: boolean = false;
   @observable selectedBucket: string | null = null;
-  selectedObjects: Array<FsObject> = [];
+  @observable selectedObjects: Array<FsObject> = [];
 
   private getRootFolder(): FsFolder {
     return {
@@ -55,6 +55,29 @@ export class S3Store {
   addSelectedObject = (fsObject: FsObject) => {
     this.selectedObjects.push(fsObject);
     fsObject.selected = true;
+  };
+
+  deleteSelectedObjects = (): Promise<Array<boolean>> => {
+    const prevFolder = this.currentFolder;
+    let returnValue: Array<boolean>;
+    return Promise.all(
+      this.selectedObjects.map(selectedObj => {
+        if (this.selectedBucket) {
+          return this.s3Controller.rm(this.selectedBucket, selectedObj.name);
+        } else {
+          throw new Error("selectedBucket");
+        }
+      })
+    )
+      .then(result => {
+        returnValue = result;
+        if (prevFolder === this.currentFolder) {
+          return this.refreshCurrentFolder();
+        } else {
+          return null;
+        }
+      })
+      .then(() => returnValue);
   };
 
   @action

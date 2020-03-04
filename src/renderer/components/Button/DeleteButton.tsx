@@ -6,24 +6,25 @@ import { useObserver } from "mobx-react";
 
 const Self = styled.button`
   cursor: pointer;
+  margin-left: 10px;
   &:active &:hover {
     background-color: #bbb;
   }
 `;
 
-const DownloadButtton: React.FC = () =>
+const DeleteButton: React.FC = () =>
   useObserver(() => {
-    const { downloadSelectedObject, selectedObjects } = s3.useStore();
+    const { deleteSelectedObjects, selectedObjects } = s3.useStore();
 
     const handleOnClick = useCallback(() => {
-      downloadSelectedObject();
+      deleteSelectedObjects();
     }, []);
 
     return (
       <Self onClick={handleOnClick} disabled={selectedObjects.length === 0}>
-        다운로드
+        삭제
       </Self>
     );
   });
 
-export default DownloadButtton;
+export default DeleteButton;

@@ -138,6 +138,23 @@ export default class S3Controller implements IS3Controller {
     );
   }
 
+  rm(bucketName: string, fileName: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.s3?.deleteObject(
+        {
+          Bucket: bucketName,
+          Key: fileName
+        },
+        err => {
+          if (err) {
+            reject(err);
+          }
+          resolve(true);
+        }
+      );
+    });
+  }
+
   setCredential(accessKeyId: string, secretAccessKey: string) {
     return new Promise<BucketNames>((resolve, reject) => {
       const s3 = new AWS.S3({

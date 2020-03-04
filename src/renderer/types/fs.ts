@@ -31,6 +31,7 @@ export interface IFsContorller {
     fileName: string,
     distPath: string
   ) => Promise<string>;
+  rm(bucketName: string, fileName: string): Promise<boolean>;
   upload: (bucketName: string, destDir: string, file: File) => Promise<string>;
 }
 

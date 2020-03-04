@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+import DeleteButton from "./Button/DeleteButton";
 import DownloadButton from "./Button/DownloadButton";
 
 const Self = styled.div`
@@ -15,6 +16,7 @@ const Actions: React.FC = () => {
   return (
     <Self>
       <DownloadButton />
+      <DeleteButton />
     </Self>
   );
 };
