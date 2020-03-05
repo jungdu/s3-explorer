@@ -21,11 +21,13 @@ const Text = styled.div`
 
 const FolderView: React.FC = () =>
   useObserver(() => {
-    const { filesInFolderView, uploadFiles } = s3.useStore();
+    const { currentFolder, uploadFiles } = s3.useStore();
 
-    const folderViewItems = filesInFolderView.map((fsObject: FsObject) => (
-      <FolderViewItem key={fsObject.id} fsObject={fsObject} />
-    ));
+    const folderViewItems = currentFolder
+      ? currentFolder.children.map((fsObject: FsObject) => (
+          <FolderViewItem key={fsObject.id} fsObject={fsObject} />
+        ))
+      : null;
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
@@ -48,7 +50,11 @@ const FolderView: React.FC = () =>
         onDragEnter={handlePreventDefault}
         onDragOver={handlePreventDefault}
       >
-        {filesInFolderView.length > 0 ? folderViewItems : <Text>Empty...</Text>}
+        {currentFolder && currentFolder.children.length > 0 ? (
+          folderViewItems
+        ) : (
+          <Text>Empty...</Text>
+        )}
       </Self>
     );
   });

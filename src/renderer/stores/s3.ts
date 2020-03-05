@@ -18,10 +18,8 @@ export class S3Store {
   }
 
   @observable bucketNames: BucketNames = [];
-  currentFolder: FsFolder | null = null;
-  @observable filesInFolderView: Array<FsObject> = [];
+  @observable currentFolder: FsFolder | null = null;
   @observable downloadFolder: string = "";
-  @observable fsObjects: Array<FsObject> = [];
   @observable loading: boolean = false;
   @observable selectedBucket: string | null = null;
   @observable selectedObjects: Array<FsObject> = [];
@@ -115,8 +113,8 @@ export class S3Store {
     if (this.selectedBucket) {
       this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
         this.setChildrenOfFoler(folder, fsObjects);
-        this.setFilesInFolderView(fsObjects);
-        this.currentFolder = folder;
+        this.setCurrentFolder(folder);
+        console.log("this.currentFolder :", this.currentFolder);
       });
     } else {
       throw new Error("no selectedBucket");
@@ -143,9 +141,10 @@ export class S3Store {
     if (bucketName) {
       this.s3Controller.ls(bucketName).then(fsObjects => {
         this.setSelectedBucket(bucketName);
-        this.setFilesInFolderView(fsObjects);
-        this.setFsObjects(fsObjects);
-        this.currentFolder = this.getRootFolder();
+        const rootFolder = this.getRootFolder();
+        this.setChildrenOfFoler(rootFolder, fsObjects);
+        this.setCurrentFolder(rootFolder);
+        console.log("footFolder :", this.currentFolder);
       });
     }
   };
@@ -184,23 +183,19 @@ export class S3Store {
 
   @action
   setChildrenOfFoler(fsFolder: FsFolder, fsObjects: Array<FsObject>): void {
+    console.log("차일드 바뀜!!!!!");
     fsFolder.children = fsObjects;
   }
 
   @action
-  setFilesInFolderView(fsObjects: Array<FsObject>) {
-    this.filesInFolderView = fsObjects;
+  setCurrentFolder(folder: FsFolder) {
+    this.currentFolder = folder;
   }
 
   @action
   setDownloadFolder = (folder: string) => {
     this.downloadFolder = folder;
   };
-
-  @action
-  setFsObjects(fsObjects: Array<FsObject>) {
-    this.fsObjects = fsObjects;
-  }
 
   @action
   setSelectedBucket(bucketName: string) {
