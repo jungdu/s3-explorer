@@ -1,14 +1,13 @@
-import { observable, action } from "mobx";
-import nanoid from "nanoid";
-
 import {
   BucketNames,
-  FsObject,
   FsFolder,
-  IS3Controller,
-  FsType
+  FsObject,
+  FsType,
+  IS3Controller
 } from "@renderer/types/fs";
 import { getNameWithoutPath } from "@renderer/utils/format";
+import { action, observable } from "mobx";
+import nanoid from "nanoid";
 
 export class S3Store {
   s3Controller: IS3Controller;
@@ -24,12 +23,12 @@ export class S3Store {
   @observable selectedBucket: string | null = null;
   @observable selectedObjects: Array<FsObject> = [];
 
-  private getRootFolder(): FsFolder {
+  private generateFolder(name: string = ""): FsFolder {
     return {
       type: FsType.FOLDER,
       children: [],
       id: nanoid(),
-      name: ""
+      name
     };
   }
 
@@ -109,7 +108,22 @@ export class S3Store {
     ).then(results => console.log("results :", results));
   };
 
+  // 지금 까지는 Tree구조로 가질 필요는 없지만
+  // 이후에 필요하기 때문에 냅둠.
   openFolder = (folder: FsFolder) => {
+    if (this.selectedBucket) {
+      this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
+        this.setChildrenOfFoler(folder, fsObjects);
+        this.setCurrentFolder(folder);
+      });
+    } else {
+      throw new Error("no selectedBucket");
+    }
+  };
+
+  openFolderByName = (folderName: string) => {
+    const folder = this.generateFolder(folderName);
+
     if (this.selectedBucket) {
       this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
         this.setChildrenOfFoler(folder, fsObjects);
@@ -141,7 +155,7 @@ export class S3Store {
     if (bucketName) {
       this.s3Controller.ls(bucketName).then(fsObjects => {
         this.setSelectedBucket(bucketName);
-        const rootFolder = this.getRootFolder();
+        const rootFolder = this.generateFolder();
         this.setChildrenOfFoler(rootFolder, fsObjects);
         this.setCurrentFolder(rootFolder);
         console.log("footFolder :", this.currentFolder);
