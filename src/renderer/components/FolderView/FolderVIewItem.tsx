@@ -1,12 +1,11 @@
-import React, { MouseEventHandler } from "react";
-import styled, { css } from "styled-components";
-
 import { s3 } from "@renderer/context";
-import { FsObject, FsType } from "@renderer/types/fs";
 import FileSvg from "@renderer/image/file-24px.svg";
 import FolderSvg from "@renderer/image/folder_open-24px.svg";
-
+import { FsObject, FsType } from "@renderer/types/fs";
+import { getNameWithoutPath } from "@renderer/utils/format";
 import { useObserver } from "mobx-react";
+import React, { MouseEventHandler } from "react";
+import styled, { css } from "styled-components";
 
 const selectedItemStyle = css`
   &:after {
@@ -93,7 +92,7 @@ const FolderViewItem: React.FC<Props> = ({ fsObject }) => {
       onDoubleClick={handleDoubleClick}
     >
       <ItemIcon isFolder={fsObject.type === FsType.FOLDER} />
-      <ItemText>{fsObject.name}</ItemText>
+      <ItemText>{getNameWithoutPath(fsObject.name)}</ItemText>
     </Item>
   ));
 };
