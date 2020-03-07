@@ -14,12 +14,11 @@ import {
   FsObject,
   FsFile,
   FsType,
-  FsFolder,
-  IS3Controller
+  FsFolder
 } from "@renderer/types/fs";
 import { notNull, notUndefined } from "@renderer/utils/typeGuards";
 
-export default class S3Controller implements IS3Controller {
+export default class S3Controller {
   private s3: S3 | null = null;
 
   private getBucketNames(listBucketsOutput: ListBucketsOutput): BucketNames {

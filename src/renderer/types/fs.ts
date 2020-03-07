@@ -24,24 +24,6 @@ export interface FsFolder extends FsCommonFiled {
 
 export type FsObject = FsFile | FsFolder;
 
-export interface IFsContorller {
-  ls: (bucketName: string, folderName?: string) => Promise<Array<FsObject>>;
-  download: (
-    bucketName: string,
-    fileName: string,
-    distPath: string
-  ) => Promise<string>;
-  rm(bucketName: string, fileName: string): Promise<boolean>;
-  upload: (bucketName: string, destDir: string, file: File) => Promise<string>;
-}
-
-export interface IS3Controller extends IFsContorller {
-  setCredential: (
-    accessKeyId: string,
-    secretAccessKey: string
-  ) => Promise<BucketNames>;
-}
-
 export type BucketNames = Array<string>;
 
 export function isFile(fsObject: FsObject): fsObject is FsFile {
