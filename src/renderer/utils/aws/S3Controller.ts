@@ -104,6 +104,17 @@ export default class S3Controller {
     }
   }
 
+  private validateFolderName(folderName: string): boolean {
+    console.log("folderName :", folderName);
+    if (
+      folderName.length > 0 &&
+      folderName.charAt(folderName.length - 1) !== "/"
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   download(
     bucketName: string,
     srcFileName: string,
@@ -134,20 +145,24 @@ export default class S3Controller {
   }
 
   mkdir(bucketName: string, folderName: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.getS3().putObject(
-        {
-          Bucket: bucketName,
-          Key: folderName
-        },
-        err => {
-          if (err) {
-            reject(err);
+    if (this.validateFolderName(bucketName)) {
+      return new Promise((resolve, reject) => {
+        this.getS3().putObject(
+          {
+            Bucket: bucketName,
+            Key: folderName
+          },
+          err => {
+            if (err) {
+              reject(err);
+            }
+            resolve(true);
           }
-          resolve(true);
-        }
-      );
-    });
+        );
+      });
+    } else {
+      return Promise.reject(new Error("Invalid folder name"));
+    }
   }
 
   ls(bucketName: string, folderName: string = ""): Promise<Array<FsObject>> {

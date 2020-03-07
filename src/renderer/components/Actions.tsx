@@ -1,5 +1,6 @@
-import DeleteButton from "./Button/DeleteButton";
-import DownloadButton from "./Button/DownloadButton";
+import CreateFolderButton from "@renderer/components/Button/CreateFolderButton";
+import DeleteButton from "@renderer/components/Button/DeleteButton";
+import DownloadButton from "@renderer/components/Button/DownloadButton";
 import WatchingFolder from "@renderer/components/WatchingFolder";
 import React from "react";
 import styled from "styled-components";
@@ -18,6 +19,7 @@ const Actions: React.FC = () => {
       <WatchingFolder />
       <DownloadButton />
       <DeleteButton />
+      <CreateFolderButton />
     </Self>
   );
 };

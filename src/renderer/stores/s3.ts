@@ -143,9 +143,11 @@ export class S3Store {
     fsObject.selected = true;
   };
 
-  // createFolder = () => (folderName: string) => {
-  //   this.s3Controller.mkdir(this.selectedBucket, folderName);
-  // };
+  createFolder = (folderName: string) => {
+    this.s3Controller.mkdir(this.getSelectedBucket(), folderName).then(() => {
+      this.refreshCurrentFolder();
+    });
+  };
 
   deleteSelectedObjects = (): Promise<Array<boolean>> => {
     const prevFolder = this.currentFolder;
