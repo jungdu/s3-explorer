@@ -16,7 +16,7 @@ import {
   FsType,
   FsFolder
 } from "@renderer/types/fs";
-import { notNull, notUndefined } from "@renderer/utils/typeGuards";
+import { notUndefined } from "@renderer/utils/typeGuards";
 
 export default class S3Controller {
   private s3: S3 | null = null;
@@ -79,25 +79,29 @@ export default class S3Controller {
 
   private getListObjects(bucketName: string, prefix: string) {
     return new Promise<ListObjectsV2Output>((resolve, reject) => {
-      if (notNull(this.s3)) {
-        this.s3.listObjectsV2(
-          {
-            Bucket: bucketName,
-            Delimiter: "/",
-            Prefix: prefix,
-            StartAfter: prefix
-          },
-          (err, data) => {
-            if (err) {
-              reject(new Error(`S3ctl.listObjectV2 error code:${err.code}`));
-            }
-            resolve(data);
+      this.getS3().listObjectsV2(
+        {
+          Bucket: bucketName,
+          Delimiter: "/",
+          Prefix: prefix,
+          StartAfter: prefix
+        },
+        (err, data) => {
+          if (err) {
+            reject(new Error(`S3ctl.listObjectV2 error code:${err.code}`));
           }
-        );
-      } else {
-        throw new Error("no S3 Object");
-      }
+          resolve(data);
+        }
+      );
     });
+  }
+
+  private getS3(): S3 {
+    if (this.s3) {
+      return this.s3;
+    } else {
+      throw new Error("no S3 Object");
+    }
   }
 
   download(
@@ -106,13 +110,14 @@ export default class S3Controller {
     distPath: string
   ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      if (notNull(this.s3)) {
-        const params: GetObjectRequest = {
-          Bucket: bucketName,
-          Key: srcFileName
-        };
+      const params: GetObjectRequest = {
+        Bucket: bucketName,
+        Key: srcFileName
+      };
 
-        this.s3.getSignedUrlPromise("getObject", params).then(signedUrl => {
+      this.getS3()
+        .getSignedUrlPromise("getObject", params)
+        .then(signedUrl => {
           https.get(signedUrl).on("response", function(res) {
             const writeStream = fs.createWriteStream(distPath);
             res
@@ -125,9 +130,6 @@ export default class S3Controller {
               });
           });
         });
-      } else {
-        reject(new Error("no S3 Object"));
-      }
     });
   }
 
@@ -183,7 +185,7 @@ export default class S3Controller {
         Body: file,
         ACL: "public-read" // 접근 권한
       };
-      this.s3?.putObject(params, function(err, data) {
+      this.getS3().putObject(params, function(err, data) {
         if (err) {
           reject(err);
         }
