@@ -19,7 +19,7 @@ export interface FsFile extends FsCommonFiled {
 
 export interface FsFolder extends FsCommonFiled {
   type: FsType.FOLDER;
-  children: Array<FsObject>;
+  childNames: Array<string>;
 }
 
 export type FsObject = FsFile | FsFolder;

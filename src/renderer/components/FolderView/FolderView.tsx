@@ -3,7 +3,6 @@ import { useObserver } from "mobx-react";
 import styled from "styled-components";
 
 import { s3 } from "@renderer/context";
-import { FsObject } from "@renderer/types/fs";
 
 import FolderViewItem from "./FolderViewItem";
 
@@ -21,12 +20,12 @@ const Text = styled.div`
 
 const FolderView: React.FC = () =>
   useObserver(() => {
-    const { currentFolder, uploadFiles } = s3.useStore();
+    const { currentFolder, uploadFiles, getFsObject } = s3.useStore();
 
     const folderViewItems = currentFolder
-      ? currentFolder.children.map((fsObject: FsObject) => (
-          <FolderViewItem key={fsObject.id} fsObject={fsObject} />
-        ))
+      ? currentFolder.childNames.map((fsName: string) => {
+          return <FolderViewItem key={fsName} fsObject={getFsObject(fsName)} />;
+        })
       : null;
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -50,7 +49,7 @@ const FolderView: React.FC = () =>
         onDragEnter={handlePreventDefault}
         onDragOver={handlePreventDefault}
       >
-        {currentFolder && currentFolder.children.length > 0 ? (
+        {currentFolder && currentFolder.childNames.length > 0 ? (
           folderViewItems
         ) : (
           <Text>Empty...</Text>

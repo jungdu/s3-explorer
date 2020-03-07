@@ -16,14 +16,18 @@ const Breadcurmb = styled.span`
 
 const WatchingFolder: React.FC = () =>
   useObserver(() => {
-    const { currentFolder, openFolderByName } = s3.useStore();
+    const {
+      currentFolder,
+      openFolderByName,
+      openCurrentBucket
+    } = s3.useStore();
 
     if (currentFolder) {
       const splitedName = currentFolder.name.split("/").filter(name => !!name);
       const rootPath = (
         <Breadcurmb
           onClick={() => {
-            openFolderByName("");
+            openCurrentBucket();
           }}
         >
           /

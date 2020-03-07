@@ -3,7 +3,8 @@ import {
   FsFolder,
   FsObject,
   FsType,
-  IS3Controller
+  IS3Controller,
+  isFolder
 } from "@renderer/types/fs";
 import { getNameWithoutPath } from "@renderer/utils/format";
 import { action, observable } from "mobx";
@@ -19,17 +20,72 @@ export class S3Store {
   @observable bucketNames: BucketNames = [];
   @observable currentFolder: FsFolder | null = null;
   @observable downloadFolder: string = "";
-  @observable loading: boolean = false;
+  fsObjectsInBucket: Map<string, FsObject> | null = null;
+  @observable bucketLoading: boolean = false;
   @observable selectedBucket: string | null = null;
   @observable selectedObjects: Array<FsObject> = [];
 
-  private generateFolder(name: string = ""): FsFolder {
+  // TODO
+  // 지금 구조는 map에 쌓이는 형태라서 memory leak이 발생할 수 있다.
+  // 그러므로 openFolder를 통해서 불러올때 이전에 등록된
+  // children에 대한 deregister작업이 필요하다
+  // private deregisterFsObject(fsObject: FsObject): void {
+  //   this.fsObjectsInBucket.delete(fsObject.name);
+  // }
+
+  private generateFolder(name: string): FsFolder {
     return {
       type: FsType.FOLDER,
-      children: [],
+      childNames: [],
       id: nanoid(),
       name
     };
+  }
+
+  // TODO 필요할 날이 올 것 같음
+  // private getRootFolder(): FsFolder {
+  //   const rootFolder = this.getFsObject("/");
+  //   if (rootFolder) {
+  //     if (isFolder(rootFolder)) {
+  //       return rootFolder;
+  //     } else {
+  //       throw new Error("rootFolder is not type of Folder");
+  //     }
+  //   } else {
+  //     throw new Error("no rootFolder");
+  //   }
+  // }
+
+  private getFsObjectsInBucket(): Map<string, FsObject> {
+    if (this.fsObjectsInBucket) {
+      return this.fsObjectsInBucket;
+    } else {
+      throw new Error("no fsObjectsInBucket");
+    }
+  }
+
+  private isRegisteredObject(objectName: string): boolean {
+    return this.getFsObjectsInBucket().has(objectName);
+  }
+
+  private registerFsObject(fsObject: FsObject): void {
+    this.getFsObjectsInBucket().set(fsObject.name, observable(fsObject));
+  }
+
+  private registerRootFolder(): FsFolder {
+    const rootFolder = this.generateFolder("");
+    this.getFsObjectsInBucket().set("/", rootFolder);
+    return rootFolder;
+  }
+
+  @action
+  private setBucketLoading(loading: boolean) {
+    this.bucketLoading = loading;
+  }
+
+  @action
+  private setBucketNames(bucketNames: BucketNames) {
+    this.bucketNames = bucketNames;
   }
 
   private upload = (file: File): Promise<string> => {
@@ -79,11 +135,9 @@ export class S3Store {
 
   @action
   deselectObject = (fsObject: FsObject) => {
-    console.log("this.selectedObjects before :", this.selectedObjects);
     this.selectedObjects = this.selectedObjects.filter(
       selectedObject => selectedObject !== fsObject
     );
-    console.log("this.selectedObjects after :", this.selectedObjects);
     fsObject.selected = false;
   };
 
@@ -108,8 +162,16 @@ export class S3Store {
     ).then(results => console.log("results :", results));
   };
 
-  // 지금 까지는 Tree구조로 가질 필요는 없지만
-  // 이후에 필요하기 때문에 냅둠.
+  getFsObject = (name: string): FsObject => {
+    console.log("name :", name);
+    const targetObj = this.getFsObjectsInBucket().get(name);
+    if (targetObj) {
+      return targetObj;
+    } else {
+      throw new Error("no targetObject in fsObjects");
+    }
+  };
+
   openFolder = (folder: FsFolder) => {
     if (this.selectedBucket) {
       this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
@@ -122,16 +184,23 @@ export class S3Store {
   };
 
   openFolderByName = (folderName: string) => {
-    const folder = this.generateFolder(folderName);
-
+    const folder = this.getFsObject(folderName);
     if (this.selectedBucket) {
-      this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
-        this.setChildrenOfFoler(folder, fsObjects);
-        this.setCurrentFolder(folder);
-        console.log("this.currentFolder :", this.currentFolder);
-      });
+      if (isFolder(folder)) {
+        this.openFolder(folder);
+      } else {
+        throw new Error("Not a folder");
+      }
     } else {
-      throw new Error("no selectedBucket");
+      throw new Error("No selectedBucket");
+    }
+  };
+
+  openCurrentBucket = () => {
+    if (this.selectedBucket) {
+      this.selectBucket(this.selectedBucket);
+    } else {
+      throw new Error("no SelectedBucket");
     }
   };
 
@@ -152,15 +221,17 @@ export class S3Store {
 
   @action
   selectBucket = (bucketName: string) => {
-    if (bucketName) {
-      this.s3Controller.ls(bucketName).then(fsObjects => {
-        this.setSelectedBucket(bucketName);
-        const rootFolder = this.generateFolder();
-        this.setChildrenOfFoler(rootFolder, fsObjects);
-        this.setCurrentFolder(rootFolder);
-        console.log("footFolder :", this.currentFolder);
+    this.s3Controller.ls(bucketName).then(fsObjects => {
+      this.fsObjectsInBucket = new Map<string, FsObject>();
+      const rootFolder = this.registerRootFolder();
+      this.setSelectedBucket(bucketName);
+
+      fsObjects.forEach(fsObj => {
+        this.registerFsObject(fsObj);
+        rootFolder.childNames.push(fsObj.name);
       });
-    }
+      this.currentFolder = rootFolder;
+    });
   };
 
   @action
@@ -169,16 +240,6 @@ export class S3Store {
     this.selectedObjects = [selectedObject];
     selectedObject.selected = true;
   };
-
-  @action
-  setBucketLoading(loading: boolean) {
-    this.loading = loading;
-  }
-
-  @action
-  setBucketNames(bucketNames: BucketNames) {
-    this.bucketNames = bucketNames;
-  }
 
   setCredential = (accessKeyId: string, secretAccessKey: string) => {
     this.setBucketLoading(true);
@@ -196,13 +257,23 @@ export class S3Store {
   };
 
   @action
-  setChildrenOfFoler(fsFolder: FsFolder, fsObjects: Array<FsObject>): void {
-    console.log("차일드 바뀜!!!!!");
-    fsFolder.children = fsObjects;
+  setChildrenOfFoler(parent: FsFolder, childObjects: Array<FsObject>): void {
+    const newChildNames: Array<string> = [];
+    childObjects.map(childObject => {
+      const childName = childObject.name;
+      if (this.isRegisteredObject(childName)) {
+        const registedObject = this.getFsObject(childName);
+        console.log("registedObject :", registedObject);
+      } else {
+        this.registerFsObject(childObject);
+      }
+      newChildNames.push(childName);
+    });
+    parent.childNames = newChildNames;
   }
 
   @action
-  setCurrentFolder(folder: FsFolder) {
+  private setCurrentFolder(folder: FsFolder) {
     this.currentFolder = folder;
   }
 
@@ -212,7 +283,7 @@ export class S3Store {
   };
 
   @action
-  setSelectedBucket(bucketName: string) {
+  private setSelectedBucket(bucketName: string) {
     this.selectedBucket = bucketName;
   }
 

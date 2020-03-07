@@ -7,11 +7,11 @@ import Buckets from "./Buckets";
 
 const BucketsContainer: React.FC = () =>
   useObserver(() => {
-    const { bucketNames, loading, selectBucket } = s3.useStore();
+    const { bucketNames, bucketLoading, selectBucket } = s3.useStore();
     return (
       <Buckets
         bucketNames={bucketNames}
-        loading={loading}
+        loading={bucketLoading}
         onBucketClick={bucketName => {
           selectBucket(bucketName);
         }}

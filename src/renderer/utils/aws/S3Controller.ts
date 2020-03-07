@@ -68,7 +68,7 @@ export default class S3Controller implements IS3Controller {
             id: nanoid(),
             name: prefix.Prefix,
             type: FsType.FOLDER,
-            children: [],
+            childNames: [],
             selected: false
           };
           result.push(folder);

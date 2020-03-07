@@ -59,42 +59,43 @@ export interface Props {
   fsObject: FsObject;
 }
 
-const FolderViewItem: React.FC<Props> = ({ fsObject }) => {
-  const {
-    addSelectedObject,
-    deselectObject,
-    openFolder,
-    selectObject
-  } = s3.useStore();
+const FolderViewItem: React.FC<Props> = ({ fsObject }) =>
+  useObserver(() => {
+    const {
+      addSelectedObject,
+      deselectObject,
+      openFolder,
+      selectObject
+    } = s3.useStore();
 
-  const handleClick: MouseEventHandler = (event): void => {
-    if (event.altKey) {
-      if (fsObject.selected) {
-        deselectObject(fsObject);
+    const handleClick: MouseEventHandler = (event): void => {
+      if (event.altKey) {
+        if (fsObject.selected) {
+          deselectObject(fsObject);
+        } else {
+          addSelectedObject(fsObject);
+        }
       } else {
-        addSelectedObject(fsObject);
+        selectObject(fsObject);
       }
-    } else {
-      selectObject(fsObject);
-    }
-  };
-  const handleDoubleClick = () => {
-    if (fsObject.type === FsType.FOLDER) {
-      openFolder(fsObject);
-    }
-  };
+    };
+    const handleDoubleClick = () => {
+      if (fsObject.type === FsType.FOLDER) {
+        openFolder(fsObject);
+      }
+    };
 
-  return useObserver(() => (
-    <Item
-      selected={fsObject.selected ? true : false}
-      key={fsObject.id}
-      onClick={handleClick}
-      onDoubleClick={handleDoubleClick}
-    >
-      <ItemIcon isFolder={fsObject.type === FsType.FOLDER} />
-      <ItemText>{getNameWithoutPath(fsObject.name)}</ItemText>
-    </Item>
-  ));
-};
+    return (
+      <Item
+        selected={fsObject.selected ? true : false}
+        key={fsObject.id}
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
+      >
+        <ItemIcon isFolder={fsObject.type === FsType.FOLDER} />
+        <ItemText>{getNameWithoutPath(fsObject.name)}</ItemText>
+      </Item>
+    );
+  });
 
 export default FolderViewItem;
