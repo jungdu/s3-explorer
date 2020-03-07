@@ -6,6 +6,7 @@ import { useObserver } from "mobx-react";
 
 const Self = styled.button`
   cursor: pointer;
+  flex-shrink: 0;
   margin-left: 10px;
   &:active &:hover {
     background-color: #bbb;

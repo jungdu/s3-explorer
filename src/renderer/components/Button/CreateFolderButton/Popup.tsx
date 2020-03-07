@@ -12,7 +12,7 @@ const Self = styled.div`
   width: 174px;
   height: 44px;
   padding: 0 10px;
-  background-color: #ccc;
+  background-color: #eff5ff;
 `;
 
 const ConfirmButton = styled.button`

@@ -8,9 +8,12 @@ const Self = styled.div`
   display: inline-block;
   position: relative;
   margin-left: 10px;
+  flex-shrink: 0;
 `;
 
-const ShowPopupButton = styled.button``;
+const ShowPopupButton = styled.button`
+  cursor: pointer;
+`;
 
 const CreateFolderButton: React.FC = () => {
   const [popupShown, setPopupShown] = useState<boolean>(false);
