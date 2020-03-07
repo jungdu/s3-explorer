@@ -25,14 +25,6 @@ export class S3Store {
   @observable selectedBucket: string | null = null;
   @observable selectedObjects: Array<FsObject> = [];
 
-  // TODO
-  // 지금 구조는 map에 쌓이는 형태라서 memory leak이 발생할 수 있다.
-  // 그러므로 openFolder를 통해서 불러올때 이전에 등록된
-  // children에 대한 deregister작업이 필요하다
-  // private deregisterFsObject(fsObject: FsObject): void {
-  //   this.fsObjectsInBucket.delete(fsObject.name);
-  // }
-
   private generateFolder(name: string): FsFolder {
     return {
       type: FsType.FOLDER,
@@ -55,6 +47,25 @@ export class S3Store {
   //     throw new Error("no rootFolder");
   //   }
   // }
+
+  private deregisterFsObject(fsObjName: string): void {
+    this.getFsObjectsInBucket().delete(fsObjName);
+  }
+
+  private deregisterFsObjects(
+    fsObjNames: Array<string>,
+    parentName?: string
+  ): void {
+    if (parentName) {
+      fsObjNames.forEach(fsObjName => {
+        this.deregisterFsObject(parentName + fsObjName);
+      });
+    } else {
+      fsObjNames.forEach(fsObjName => {
+        this.deregisterFsObject(fsObjName);
+      });
+    }
+  }
 
   private getFsObjectsInBucket(): Map<string, FsObject> {
     if (this.fsObjectsInBucket) {
@@ -86,6 +97,11 @@ export class S3Store {
   @action
   private setBucketNames(bucketNames: BucketNames) {
     this.bucketNames = bucketNames;
+  }
+
+  @action
+  private setCurrentFolder(folder: FsFolder) {
+    this.currentFolder = folder;
   }
 
   private upload = (file: File): Promise<string> => {
@@ -163,7 +179,6 @@ export class S3Store {
   };
 
   getFsObject = (name: string): FsObject => {
-    console.log("name :", name);
     const targetObj = this.getFsObjectsInBucket().get(name);
     if (targetObj) {
       return targetObj;
@@ -225,12 +240,8 @@ export class S3Store {
       this.fsObjectsInBucket = new Map<string, FsObject>();
       const rootFolder = this.registerRootFolder();
       this.setSelectedBucket(bucketName);
-
-      fsObjects.forEach(fsObj => {
-        this.registerFsObject(fsObj);
-        rootFolder.childNames.push(fsObj.name);
-      });
-      this.currentFolder = rootFolder;
+      this.setChildrenOfFoler(rootFolder, fsObjects);
+      this.setCurrentFolder(rootFolder);
     });
   };
 
@@ -258,23 +269,21 @@ export class S3Store {
 
   @action
   setChildrenOfFoler(parent: FsFolder, childObjects: Array<FsObject>): void {
+    let prevChildNames = parent.childNames;
     const newChildNames: Array<string> = [];
-    childObjects.map(childObject => {
+    childObjects.forEach(childObject => {
       const childName = childObject.name;
-      if (this.isRegisteredObject(childName)) {
-        const registedObject = this.getFsObject(childName);
-        console.log("registedObject :", registedObject);
-      } else {
+      if (!this.isRegisteredObject(childName)) {
         this.registerFsObject(childObject);
+      } else {
+        prevChildNames = prevChildNames.filter(
+          prevChildName => prevChildName !== childName
+        );
       }
       newChildNames.push(childName);
+      this.deregisterFsObjects(prevChildNames);
     });
     parent.childNames = newChildNames;
-  }
-
-  @action
-  private setCurrentFolder(folder: FsFolder) {
-    this.currentFolder = folder;
   }
 
   @action
