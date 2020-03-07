@@ -67,11 +67,27 @@ export class S3Store {
     }
   }
 
+  private getCurrentFolder(): FsFolder {
+    if (this.currentFolder) {
+      return this.currentFolder;
+    } else {
+      throw new Error("No current folder");
+    }
+  }
+
   private getFsObjectsInBucket(): Map<string, FsObject> {
     if (this.fsObjectsInBucket) {
       return this.fsObjectsInBucket;
     } else {
-      throw new Error("no fsObjectsInBucket");
+      throw new Error("No fsObjectsInBucket");
+    }
+  }
+
+  private getSelectedBucket(): string {
+    if (this.selectedBucket) {
+      return this.selectedBucket;
+    } else {
+      throw new Error("No selectedBucket");
     }
   }
 
@@ -104,19 +120,20 @@ export class S3Store {
     this.currentFolder = folder;
   }
 
+  @action
+  private setSelectedBucket(bucketName: string) {
+    this.selectedBucket = bucketName;
+  }
+
   private upload = (file: File): Promise<string> => {
-    if (this.selectedBucket) {
-      if (this.currentFolder !== null) {
-        return this.s3Controller.upload(
-          this.selectedBucket,
-          this.currentFolder.name,
-          file
-        );
-      } else {
-        throw new Error("No currentFolder");
-      }
+    if (this.currentFolder !== null) {
+      return this.s3Controller.upload(
+        this.getSelectedBucket(),
+        this.currentFolder.name,
+        file
+      );
     } else {
-      throw new Error("No selectedBucket");
+      throw new Error("No currentFolder");
     }
   };
 
@@ -126,16 +143,16 @@ export class S3Store {
     fsObject.selected = true;
   };
 
+  // createFolder = () => (folderName: string) => {
+  //   this.s3Controller.mkdir(this.selectedBucket, folderName);
+  // };
+
   deleteSelectedObjects = (): Promise<Array<boolean>> => {
     const prevFolder = this.currentFolder;
     let returnValue: Array<boolean>;
     return Promise.all(
       this.selectedObjects.map(selectedObj => {
-        if (this.selectedBucket) {
-          return this.s3Controller.rm(this.selectedBucket, selectedObj.name);
-        } else {
-          throw new Error("selectedBucket");
-        }
+        return this.s3Controller.rm(this.getSelectedBucket(), selectedObj.name);
       })
     )
       .then(result => {
@@ -160,19 +177,15 @@ export class S3Store {
   downloadSelectedObject = () => {
     return Promise.all(
       this.selectedObjects.map(selectedObj => {
-        if (this.selectedBucket) {
-          if (selectedObj.selected) {
-            selectedObj.name;
-            return this.s3Controller.download(
-              this.selectedBucket,
-              selectedObj.name,
-              `${this.downloadFolder}${getNameWithoutPath(selectedObj.name)}`
-            );
-          } else {
-            throw new Error("SelectedObject isn't selected ");
-          }
+        if (selectedObj.selected) {
+          selectedObj.name;
+          return this.s3Controller.download(
+            this.getSelectedBucket(),
+            selectedObj.name,
+            `${this.downloadFolder}${getNameWithoutPath(selectedObj.name)}`
+          );
         } else {
-          throw new Error("No Selected bucket");
+          throw new Error("SelectedObject isn't selected ");
         }
       })
     ).then(results => console.log("results :", results));
@@ -183,48 +196,34 @@ export class S3Store {
     if (targetObj) {
       return targetObj;
     } else {
-      throw new Error("no targetObject in fsObjects");
+      throw new Error("No targetObject in fsObjects");
     }
   };
 
   openFolder = (folder: FsFolder) => {
-    if (this.selectedBucket) {
-      this.s3Controller.ls(this.selectedBucket, folder.name).then(fsObjects => {
+    this.s3Controller
+      .ls(this.getSelectedBucket(), folder.name)
+      .then(fsObjects => {
         this.setChildrenOfFoler(folder, fsObjects);
         this.setCurrentFolder(folder);
       });
-    } else {
-      throw new Error("no selectedBucket");
-    }
   };
 
   openFolderByName = (folderName: string) => {
     const folder = this.getFsObject(folderName);
-    if (this.selectedBucket) {
-      if (isFolder(folder)) {
-        this.openFolder(folder);
-      } else {
-        throw new Error("Not a folder");
-      }
+    if (isFolder(folder)) {
+      this.openFolder(folder);
     } else {
-      throw new Error("No selectedBucket");
+      throw new Error("Not a folder");
     }
   };
 
   openCurrentBucket = () => {
-    if (this.selectedBucket) {
-      this.selectBucket(this.selectedBucket);
-    } else {
-      throw new Error("no SelectedBucket");
-    }
+    this.selectBucket(this.getSelectedBucket());
   };
 
   refreshCurrentFolder() {
-    if (this.currentFolder) {
-      return this.openFolder(this.currentFolder);
-    } else {
-      throw new Error("No currentFolder");
-    }
+    return this.openFolder(this.getCurrentFolder());
   }
 
   @action
@@ -290,11 +289,6 @@ export class S3Store {
   setDownloadFolder = (folder: string) => {
     this.downloadFolder = folder;
   };
-
-  @action
-  private setSelectedBucket(bucketName: string) {
-    this.selectedBucket = bucketName;
-  }
 
   uploadFiles = (files: FileList): Promise<string[]> => {
     const pms: Promise<string>[] = [];
