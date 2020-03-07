@@ -37,7 +37,7 @@ const WatchingFolder: React.FC = () =>
         <span key={index}>
           <Breadcurmb
             onClick={() => {
-              const fileName = splitedName.splice(0, index + 1).join("/") + "/";
+              const fileName = splitedName.slice(0, index + 1).join("/") + "/";
               openFolderByName(fileName);
             }}
           >
