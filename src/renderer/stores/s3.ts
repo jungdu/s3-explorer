@@ -281,9 +281,9 @@ export class S3Store {
         );
       }
       newChildNames.push(childName);
-      this.deregisterFsObjects(prevChildNames);
     });
     parent.childNames = newChildNames;
+    this.deregisterFsObjects(prevChildNames);
   }
 
   @action
