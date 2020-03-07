@@ -77,7 +77,7 @@ describe("S3test with AWS SDK", () => {
   });
 
   // TODO fs로 읽어와서 File로 만든 다음에 테스트 하도록 해야함
-  // test.only("Upload file", () => {
+  // test("Upload file", () => {
   //   const sourcePath = path.resolve(__dirname, __filename);
   //   console.log("sourcePath :", sourcePath);
   //   return s3Controller
@@ -86,4 +86,11 @@ describe("S3test with AWS SDK", () => {
   //       console.log("result :", result);
   //     });
   // });
+
+  test.only("Create folder in bucket", () => {
+    // 주의할 점은
+    return s3Controller.mkdir(TEST_BUCKET, "newFolder/").then(result => {
+      expect(result).toBe(true);
+    });
+  });
 });

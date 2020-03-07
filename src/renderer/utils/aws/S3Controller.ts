@@ -133,6 +133,23 @@ export default class S3Controller {
     });
   }
 
+  mkdir(bucketName: string, folderName: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.getS3().putObject(
+        {
+          Bucket: bucketName,
+          Key: folderName
+        },
+        err => {
+          if (err) {
+            reject(err);
+          }
+          resolve(true);
+        }
+      );
+    });
+  }
+
   ls(bucketName: string, folderName: string = ""): Promise<Array<FsObject>> {
     return this.getListObjects(bucketName, folderName).then(data =>
       this.getFsObjects(data)
