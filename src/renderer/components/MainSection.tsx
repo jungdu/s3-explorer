@@ -9,6 +9,7 @@ const Self = styled.div`
   flex-grow: 1;
   flex-direction: column;
   height: 100vh;
+  overflow-x: auto;
 `;
 
 const MainSection: React.FC = () => {

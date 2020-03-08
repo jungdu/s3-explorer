@@ -7,6 +7,7 @@ const maxBreadcrumLength = 5;
 
 const Self = styled.div`
   overflow: hidden;
+  flex-shrink: 0;
   white-space: nowrap;
   padding: 5px 10px;
 `;

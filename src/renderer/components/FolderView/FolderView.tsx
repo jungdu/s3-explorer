@@ -25,6 +25,7 @@ const Self = styled.div<{ isUploadReady: boolean }>`
   flex-grow: 1;
   width: 100%;
   border: 1px lavender solid;
+  overflow-y: scroll;
 
   ${props => (props.isUploadReady ? dragOverStyle : ``)}
 `;

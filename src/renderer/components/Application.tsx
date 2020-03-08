@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 const Self = styled.div`
   display: flex;
+  overflow-y: hidden;
   min-height: 100%;
 `;
 
