@@ -1,15 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { useObserver } from "mobx-react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { s3 } from "@renderer/context";
 
 import FolderViewItem from "./FolderViewItem";
 
-const Self = styled.div`
+const dragOverStyle = css`
+  &::after {
+    content: "";
+    position: absolute;
+    display: flex;
+    font-size: 20px;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+`;
+
+const Self = styled.div<{ isUploadReady: boolean }>`
+  position: relative;
   width: 100%;
   height: 300px;
   border: 1px lavender solid;
+
+  ${props => (props.isUploadReady ? dragOverStyle : ``)}
 `;
 
 const Text = styled.div`
@@ -18,8 +35,24 @@ const Text = styled.div`
   margin: 10px 0 0 10px;
 `;
 
-const FolderView: React.FC = () =>
-  useObserver(() => {
+function handlePreventDefault(event: React.DragEvent<HTMLDivElement>) {
+  event.stopPropagation();
+  event.preventDefault();
+}
+
+const FolderView: React.FC = () => {
+  const [isDragOver, setIsDragOver] = useState<boolean>(false);
+
+  const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+    handlePreventDefault(event);
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  return useObserver(() => {
     const { currentFolder, uploadFiles, getFsObject } = s3.useStore();
 
     const folderViewItems = currentFolder
@@ -31,6 +64,7 @@ const FolderView: React.FC = () =>
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       event.stopPropagation();
+      setIsDragOver(false);
       if (event.dataTransfer) {
         uploadFiles(event.dataTransfer.files).then(result => {
           console.log("result :", result);
@@ -38,16 +72,13 @@ const FolderView: React.FC = () =>
       }
     };
 
-    const handlePreventDefault = (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-    };
-
     return (
       <Self
         onDrop={handleDrop}
-        onDragEnter={handlePreventDefault}
+        onDragEnter={handleDragEnter}
         onDragOver={handlePreventDefault}
+        onDragLeave={handleDragLeave}
+        isUploadReady={isDragOver && currentFolder ? true : false}
       >
         {currentFolder && currentFolder.childNames.length > 0 ? (
           folderViewItems
@@ -57,5 +88,6 @@ const FolderView: React.FC = () =>
       </Self>
     );
   });
+};
 
 export default FolderView;
