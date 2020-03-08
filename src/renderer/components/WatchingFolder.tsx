@@ -3,6 +3,8 @@ import { useObserver } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
 
+const maxBreadcrumLength = 5;
+
 const Self = styled.div`
   overflow: hidden;
   white-space: nowrap;
@@ -10,9 +12,14 @@ const Self = styled.div`
 `;
 
 const Breadcurmb = styled.span`
-  color: blue;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   cursor: pointer;
+  color: blue;
   padding: 0 3px;
+  max-width: 100px;
   margin: 0 3px;
 `;
 
@@ -35,22 +42,37 @@ const WatchingFolder: React.FC = () =>
           /
         </Breadcurmb>
       );
-      const breadcrumbs = splitedName.map((folderName, index) => (
-        <span key={index}>
-          <Breadcurmb
-            onClick={() => {
-              const fileName = splitedName.slice(0, index + 1).join("/") + "/";
-              openFolderByName(fileName);
-            }}
-          >
-            {folderName}
-          </Breadcurmb>
-          /
-        </span>
-      ));
+
+      const shrinkedNumber: number =
+        splitedName.length > maxBreadcrumLength
+          ? splitedName.length - maxBreadcrumLength
+          : 0;
+
+      const breadcrumbs = splitedName
+        .slice(-maxBreadcrumLength, splitedName.length)
+        .map((folderName, index) => (
+          <span key={index}>
+            <Breadcurmb
+              onClick={() => {
+                const fileName =
+                  splitedName.slice(0, shrinkedNumber + index + 1).join("/") +
+                  "/";
+                openFolderByName(fileName);
+              }}
+            >
+              {folderName}
+            </Breadcurmb>
+            /
+          </span>
+        ));
+
+      const ellipsisPath =
+        splitedName.length > maxBreadcrumLength ? <>... /</> : null;
+
       return (
         <Self>
           {rootPath}
+          {ellipsisPath}
           {breadcrumbs}
         </Self>
       );
