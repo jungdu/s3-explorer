@@ -296,7 +296,6 @@ export class S3Store {
     const pms: Promise<string>[] = [];
     const prevFolder = this.currentFolder;
     for (let i = 0; i < files.length; i++) {
-      console.log("files[i] :", files[i]);
       pms.push(this.upload(files[i]));
     }
 

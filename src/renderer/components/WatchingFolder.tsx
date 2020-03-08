@@ -4,7 +4,9 @@ import React from "react";
 import styled from "styled-components";
 
 const Self = styled.div`
-  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 5px 10px;
 `;
 
 const Breadcurmb = styled.span`

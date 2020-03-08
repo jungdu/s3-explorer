@@ -5,8 +5,11 @@ import styled from "styled-components";
 
 import { s3 } from "@renderer/context";
 
-const Self = styled.div``;
+const Self = styled.div`
+  margin: 10px 0;
+`;
 const SetFolderButton = styled.button``;
+const DownloadFolderText = styled.div``;
 
 const DownloadDirectory: React.FC = () => {
   return useObserver(() => {
@@ -25,10 +28,15 @@ const DownloadDirectory: React.FC = () => {
 
     return (
       <Self>
+        <div>Download Settings</div>
         <SetFolderButton onClick={handleClickSetFolderButton}>
-          다운로드 폴더 📁
+          다운로드 폴더
         </SetFolderButton>
-        :{downloadFolder ? downloadFolder : "다운로드 할 폴더를 선택해 주세요."}
+        <DownloadFolderText>
+          {downloadFolder
+            ? downloadFolder
+            : "다운로드 할 폴더를 선택해 주세요."}
+        </DownloadFolderText>
       </Self>
     );
   });

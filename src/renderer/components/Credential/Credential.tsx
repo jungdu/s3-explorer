@@ -27,6 +27,7 @@ const Credential: React.FC<Props> = ({ onSetCredential }) => {
 
   return (
     <div>
+      <div>Credential</div>
       <div>
         accessKeyId :
         <input

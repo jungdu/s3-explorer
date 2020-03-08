@@ -6,13 +6,16 @@ import { useObserver } from "mobx-react";
 
 const Self = styled.button`
   cursor: pointer;
-  flex-shrink: 0;
   &:active &:hover {
     background-color: #bbb;
   }
 `;
 
-const DownloadButtton: React.FC = () =>
+interface Props {
+  className?: string;
+}
+
+const DownloadButtton: React.FC<Props> = ({ className }) =>
   useObserver(() => {
     const { downloadSelectedObject, selectedObjects } = s3.useStore();
 
@@ -21,7 +24,11 @@ const DownloadButtton: React.FC = () =>
     }, []);
 
     return (
-      <Self onClick={handleOnClick} disabled={selectedObjects.length === 0}>
+      <Self
+        className={className}
+        onClick={handleOnClick}
+        disabled={selectedObjects.length === 0}
+      >
         다운로드
       </Self>
     );

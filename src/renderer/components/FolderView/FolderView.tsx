@@ -22,8 +22,8 @@ const dragOverStyle = css`
 
 const Self = styled.div<{ isUploadReady: boolean }>`
   position: relative;
+  flex-grow: 1;
   width: 100%;
-  height: 300px;
   border: 1px lavender solid;
 
   ${props => (props.isUploadReady ? dragOverStyle : ``)}
