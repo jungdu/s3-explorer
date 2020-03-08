@@ -9,16 +9,16 @@ const Self = styled.div`
   align-items: center;
   top: 20px;
   right: 0px;
-  width: 174px;
-  height: 44px;
+  width: 200px;
+  height: 50px;
   padding: 0 10px;
-  background-color: #eff5ff;
+  background-color: rgba(48, 79, 254, 0.9);
 `;
 
 const ConfirmButton = styled.button`
   padding: 3px 3px;
   white-space: nowrap;
-  margin-left: 3px;
+  margin-left: 10px;
 `;
 
 interface Props {
