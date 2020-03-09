@@ -30,7 +30,14 @@ module.exports = {
     ],
     "rules": {
         "react/prop-types": "off",
-        '@typescript-eslint/no-unused-vars': [2, { args: 'none' }]
+        '@typescript-eslint/no-unused-vars': [2, { args: 'none' }],
+        "comma-dangle": ["error", "only-multiline"],
+        'prettier/prettier': [
+            "error",
+            {
+                "trailingComma": "es5"
+            }
+        ]
     },
     "settings": {
         "react": {
