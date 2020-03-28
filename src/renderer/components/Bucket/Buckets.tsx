@@ -1,3 +1,4 @@
+import SideMenu from "@renderer/components/SideMenu";
 import React from "react";
 
 interface Props {
@@ -8,8 +9,7 @@ interface Props {
 
 const Buckets: React.FC<Props> = ({ bucketNames, loading, onBucketClick }) => {
   return (
-    <div>
-      <h1>Buckets</h1>
+    <SideMenu title="Buckets">
       <ul>
         {loading ? (
           <li>Loading...</li>
@@ -26,7 +26,7 @@ const Buckets: React.FC<Props> = ({ bucketNames, loading, onBucketClick }) => {
           ))
         )}
       </ul>
-    </div>
+    </SideMenu>
   );
 };
 
