@@ -7,7 +7,8 @@ const Self = styled.div`
   flex-basis: 300px;
   flex-shrink: 0;
   background: #f2f2f2;
-  overflow: hidden;
+  overflow-y: auto;
+  height: 100vh;
 `;
 
 const SideBar: React.FC = () => {

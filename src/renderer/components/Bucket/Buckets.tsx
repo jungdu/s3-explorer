@@ -1,11 +1,26 @@
 import SideMenu from "@renderer/components/SideMenu";
 import React from "react";
+import styled from "styled-components";
 
 interface Props {
   bucketNames: Array<string>;
   loading: boolean;
   onBucketClick: (bucketName: string) => void;
 }
+
+const Bucket = styled.li`
+  height: 35px;
+  background-color: #8c9eff;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  line-height: 35px;
+  cursor: pointer;
+
+  & ~ & {
+    margin-top: 8px;
+  }
+`;
 
 const Buckets: React.FC<Props> = ({ bucketNames, loading, onBucketClick }) => {
   return (
@@ -15,14 +30,14 @@ const Buckets: React.FC<Props> = ({ bucketNames, loading, onBucketClick }) => {
           <li>Loading...</li>
         ) : (
           bucketNames.map(bucketName => (
-            <li
+            <Bucket
               key={bucketName}
               onClick={() => {
                 onBucketClick(bucketName);
               }}
             >
               {bucketName}
-            </li>
+            </Bucket>
           ))
         )}
       </ul>
