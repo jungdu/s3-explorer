@@ -2,11 +2,19 @@ import React from "react";
 import styled from "styled-components";
 
 const Self = styled.div`
-  margin: 23px 0;
+  padding: 30px;
 `;
 
 const Title = styled.div`
-  padding: 5px;
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  margin-bottom: 20px;
+`;
+
+const Divider = styled.div`
+  height: 1px;
+  background-color: #000;
+  margin: 30px auto 0px;
 `;
 
 interface Props {
@@ -17,8 +25,8 @@ const SideMenu: React.FC<Props> = ({ children, title }) => {
   return (
     <Self>
       <Title>{title}</Title>
-
       {children}
+      <Divider />
     </Self>
   );
 };
