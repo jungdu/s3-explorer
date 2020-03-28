@@ -1,4 +1,14 @@
-import React, { useState, useCallback, useEffect } from "react";
+import styled from "styled-components";
+import React, { useCallback, useEffect, useState } from "react";
+import TextInput from "@renderer/components/common/TextInput";
+
+const CredentialInput = styled(TextInput)`
+  & ~ & {
+    margin-top: 10px;
+  }
+`;
+
+const Self = styled.div``;
 
 interface Props {
   onSetCredential: (accessKeyId: string, secretAccessId: string) => void;
@@ -26,28 +36,25 @@ const Credential: React.FC<Props> = ({ onSetCredential }) => {
   }, []);
 
   return (
-    <div>
-      <div>Credential</div>
-      <div>
-        accessKeyId :
-        <input
-          type="text"
-          value={accessKeyId}
-          onChange={e => setAccessKeyId(e.target.value)}
-        />
-      </div>
-      <div>
-        SecretAccessKey :
-        <input
-          type="text"
-          value={secretAccessKey}
-          onChange={e => setSecretAccessKey(e.target.value)}
-        />
-      </div>
+    <Self>
+      <CredentialInput
+        label="accessKeyId"
+        onChange={e => {
+          setAccessKeyId(e.target.value);
+        }}
+        value={accessKeyId}
+      />
+      <CredentialInput
+        label="SecretAccessKey"
+        onChange={e => {
+          setSecretAccessKey(e.target.value);
+        }}
+        value={secretAccessKey}
+      />
       <div>
         <button onClick={handleOnClick}>확인</button>
       </div>
-    </div>
+    </Self>
   );
 };
 
