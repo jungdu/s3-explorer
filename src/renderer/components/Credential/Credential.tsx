@@ -2,13 +2,27 @@ import styled from "styled-components";
 import React, { useCallback, useEffect, useState } from "react";
 import TextInput from "@renderer/components/common/TextInput";
 
+const Self = styled.div``;
+
 const CredentialInput = styled(TextInput)`
   & ~ & {
-    margin-top: 10px;
+    margin-top: 5px;
   }
 `;
 
-const Self = styled.div``;
+const ConfirmButton = styled.button`
+  color: ${props => props.theme.color.primaryDark};
+  padding: 7px 10px;
+  border: 1px solid ${props => props.theme.color.primaryDark};
+  background: none;
+  cursor: pointer;
+`;
+
+const ConfirmButtonContainer = styled.div`
+  display: flex;
+  margin-top: 15px;
+  justify-content: flex-end;
+`;
 
 interface Props {
   onSetCredential: (accessKeyId: string, secretAccessId: string) => void;
@@ -51,9 +65,9 @@ const Credential: React.FC<Props> = ({ onSetCredential }) => {
         }}
         value={secretAccessKey}
       />
-      <div>
-        <button onClick={handleOnClick}>확인</button>
-      </div>
+      <ConfirmButtonContainer>
+        <ConfirmButton onClick={handleOnClick}>LOGIN</ConfirmButton>
+      </ConfirmButtonContainer>
     </Self>
   );
 };

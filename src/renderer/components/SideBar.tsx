@@ -1,20 +1,19 @@
+import { BucketContainer } from "@renderer/components/Bucket";
+import Settings from "@renderer/components/Settings";
 import React from "react";
 import styled from "styled-components";
-import { BucketContainer } from "@renderer/components/Bucket";
-import { CredentialContainer } from "@renderer/components/Credential";
-import DownloadDirectory from "@renderer/components/DownloadFolder";
 
 const Self = styled.div`
   flex-basis: 300px;
   flex-shrink: 0;
+  background: #f2f2f2;
   overflow: hidden;
 `;
 
 const SideBar: React.FC = () => {
   return (
     <Self>
-      <CredentialContainer></CredentialContainer>
-      <DownloadDirectory></DownloadDirectory>
+      <Settings></Settings>
       <BucketContainer></BucketContainer>
     </Self>
   );

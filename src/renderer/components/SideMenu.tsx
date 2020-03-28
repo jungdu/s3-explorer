@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const Self = styled.div`
-  padding: 30px;
+  padding: 30px 30px 0px;
 `;
 
 const Title = styled.div`
