@@ -1,21 +1,24 @@
+import Popup from "./Popup";
+import { actionButtonStyle } from "@renderer/components/Button/constants";
 import { s3 } from "@renderer/context";
+import IcAddFolder from "@renderer/image/IcAddFolder";
 import { useObserver } from "mobx-react";
 import React, { useState } from "react";
 import styled from "styled-components";
-import Popup from "./Popup";
 
 const Self = styled.div`
-  display: inline-block;
   position: relative;
-  margin-left: 10px;
-  flex-shrink: 0;
 `;
 
 const ShowPopupButton = styled.button`
-  cursor: pointer;
+  ${actionButtonStyle}
 `;
 
-const CreateFolderButton: React.FC = () => {
+interface Props {
+  className?: string;
+}
+
+const CreateFolderButton: React.FC<Props> = ({ className }) => {
   const [popupShown, setPopupShown] = useState<boolean>(false);
 
   return useObserver(() => {
@@ -26,8 +29,10 @@ const CreateFolderButton: React.FC = () => {
     };
 
     return (
-      <Self onClick={handleClick}>
-        <ShowPopupButton disabled={!currentFolder}>폴더생성</ShowPopupButton>
+      <Self className={className} onClick={handleClick}>
+        <ShowPopupButton disabled={!currentFolder}>
+          <IcAddFolder />
+        </ShowPopupButton>
         {popupShown && currentFolder && (
           <Popup
             currentFolderName={currentFolder.name}

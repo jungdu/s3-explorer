@@ -7,7 +7,6 @@ const Self = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 20px;
   right: 0px;
   width: 200px;
   height: 50px;
@@ -30,7 +29,7 @@ interface Props {
 const Popup: React.FC<Props> = ({
   currentFolderName,
   onCreateFolder,
-  onSetPopupShown
+  onSetPopupShown,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [text, setText] = useState<string>("");

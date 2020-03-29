@@ -1,19 +1,19 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-
 import { s3 } from "@renderer/context";
 import { useObserver } from "mobx-react";
+import { actionButtonStyle } from "./constants";
+import IcDelete from "@renderer/image/IcDelete";
 
 const Self = styled.button`
-  cursor: pointer;
-  flex-shrink: 0;
-  margin-left: 10px;
-  &:active &:hover {
-    background-color: #bbb;
-  }
+  ${actionButtonStyle}
 `;
 
-const DeleteButton: React.FC = () =>
+interface Props {
+  className?: string;
+}
+
+const DeleteButton: React.FC<Props> = ({ className }) =>
   useObserver(() => {
     const { deleteSelectedObjects, selectedObjects } = s3.useStore();
 
@@ -22,8 +22,12 @@ const DeleteButton: React.FC = () =>
     }, []);
 
     return (
-      <Self onClick={handleOnClick} disabled={selectedObjects.length === 0}>
-        삭제
+      <Self
+        className={className}
+        onClick={handleOnClick}
+        disabled={selectedObjects.length === 0}
+      >
+        <IcDelete />
       </Self>
     );
   });
