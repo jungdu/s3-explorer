@@ -1,6 +1,7 @@
 import { default as CreateFolderButtonOrig } from "@renderer/components/Button/CreateFolderButton";
 import { default as DeleteButtonOrig } from "@renderer/components/Button/DeleteButton";
 import { default as DownloadButtonOrig } from "@renderer/components/Button/DownloadButton";
+import SideToogleButton from "@renderer/components/Button/SideToogleButton";
 import React from "react";
 import styled from "styled-components";
 
@@ -28,6 +29,7 @@ const Self = styled.div`
 const Actions: React.FC = () => {
   return (
     <Self>
+      <SideToogleButton />
       <DownloadButton />
       <DeleteButton />
       <CreateFolderButton />

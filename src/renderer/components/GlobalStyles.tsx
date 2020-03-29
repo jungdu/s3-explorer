@@ -17,9 +17,10 @@ ${reset};
     }
     button {
         border: none;
-        &:active &:hover {
+        &:active, &:focus {
             background-color: none;
             border: none;
+            outline: 0;
         }
     }
 `;

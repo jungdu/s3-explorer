@@ -12,6 +12,7 @@ const Self = styled.div`
   background-color: #fff;
   padding: 0px 10px 0px 5px;
   cursor: pointer;
+  overflow: hidden;
 `;
 
 const ArchiveIcon = styled(IcArchive)`

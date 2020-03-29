@@ -3,7 +3,7 @@ import {
   FsFolder,
   FsObject,
   FsType,
-  isFolder
+  isFolder,
 } from "@renderer/types/fs";
 import S3Controller from "@renderer/utils/aws/S3Controller";
 import { getNameWithoutPath } from "@renderer/utils/format";
@@ -30,7 +30,7 @@ export class S3Store {
       type: FsType.FOLDER,
       childNames: [],
       id: nanoid(),
-      name
+      name,
     };
   }
 

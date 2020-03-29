@@ -1,7 +1,7 @@
-import React, { createContext, useContext } from "react";
-
 import { S3Store } from "@renderer/stores/s3";
+import { UiState } from "@renderer/stores/uiState";
 import S3Controller from "@renderer/utils/aws/S3Controller";
+import React, { createContext, useContext } from "react";
 // import S3MockController from "@renderer/utils/aws/S3MockController";
 
 function createConnector<T>(storeInstance: T) {
@@ -15,9 +15,12 @@ function createConnector<T>(storeInstance: T) {
 
   return {
     Provider,
-    useStore
+    useStore,
   };
 }
 
 const s3Store = new S3Store(new S3Controller());
+const uiStateStore = new UiState();
+
 export const s3 = createConnector(s3Store);
+export const uiState = createConnector(uiStateStore);

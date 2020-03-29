@@ -22,6 +22,7 @@ const ConfirmButtonContainer = styled.div`
   display: flex;
   margin-top: 15px;
   justify-content: flex-end;
+  overflow: hidden;
 `;
 
 interface Props {

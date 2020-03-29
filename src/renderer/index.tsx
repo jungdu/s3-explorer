@@ -5,7 +5,7 @@ import { AppContainer } from "react-hot-loader";
 
 import theme from "./theme";
 import Application from "./components/Application";
-import { s3 } from "./context";
+import { s3, uiState } from "./context";
 
 // Create main element
 const mainElement = document.createElement("div");
@@ -15,7 +15,9 @@ ReactDOM.render(
   <ThemeProvider theme={theme}>
     <AppContainer>
       <s3.Provider>
-        <Application />
+        <uiState.Provider>
+          <Application />
+        </uiState.Provider>
       </s3.Provider>
     </AppContainer>
   </ThemeProvider>,

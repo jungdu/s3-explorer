@@ -9,6 +9,7 @@ const Title = styled.div`
   font-size: 15px;
   letter-spacing: 0.2em;
   margin-bottom: 20px;
+  overflow: hidden;
 `;
 
 const Divider = styled.div`

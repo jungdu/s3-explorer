@@ -16,6 +16,7 @@ const Bucket = styled.li`
   text-align: center;
   line-height: 35px;
   cursor: pointer;
+  overflow: hidden;
 
   & ~ & {
     margin-top: 8px;

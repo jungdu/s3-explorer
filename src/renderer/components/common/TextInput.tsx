@@ -1,13 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-const Self = styled.div``;
-
-interface Props {
-  className?: string;
-  label: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string;
-}
+const Self = styled.div`
+  overflow: hidden;
+`;
 
 const Label = styled.div`
   font-size: 12px;
@@ -25,6 +20,12 @@ const Input = styled.input`
     outline: none;
   }
 `;
+interface Props {
+  className?: string;
+  label: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  value: string;
+}
 
 const TextInput: React.FC<Props> = ({ className, label, onChange, value }) => {
   return (
