@@ -16,10 +16,9 @@ ${reset};
         background-color:#fff;
     }
     button {
+        background: none;
         border: none;
         &:active, &:focus {
-            background-color: none;
-            border: none;
             outline: 0;
         }
     }
