@@ -132,7 +132,7 @@
   },
   "dependencies": {
     "@types/dotenv": "^8.2.0",
-    "@types/node": "^13.1.6",
+    "@types/node": "^13.9.5",
     "aws-sdk": "^2.614.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.7",

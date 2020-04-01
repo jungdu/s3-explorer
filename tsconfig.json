@@ -17,6 +17,9 @@
     "paths": {
       "@renderer/*": [
         "src/renderer/*"
+      ],
+      "@common/*": [
+        "src/common/*"
       ]
     },                           
     "allowSyntheticDefaultImports": true,  

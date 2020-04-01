@@ -69,7 +69,8 @@ module.exports = merge.smart(baseConfig, {
     ],
     resolve: {
         alias: {
-            "@renderer": path.join(__dirname, "..", "src/renderer")
+            "@renderer": path.join(__dirname, "..", "src/renderer"),
+            "@common": path.join(__dirname, "..", "src/common"),
         }
     }
 });
