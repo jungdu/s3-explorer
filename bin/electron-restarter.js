@@ -18,7 +18,7 @@ function main(){
         mainProcess.kill();
         mainProcess = null;
       }
-      mainProcess = runMainProcess(mainFilePath);
+      mainProcess = runMainProcess();
     }
   })
 
@@ -39,7 +39,7 @@ function getMainFilePath(){
   return path.resolve(__dirname, "..", packageJson.main);
 }
 
-function runMainProcess(mainFilePath){
+function runMainProcess(){
   return spawn("yarn", ["start-electron"], {
     shell: true,
     env: process.env,
