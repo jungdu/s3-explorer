@@ -1,6 +1,9 @@
+import { init } from "./ipc";
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
+
+init();
 
 let win: BrowserWindow | null;
 
@@ -22,12 +25,12 @@ const createWindow = async () => {
   win = new BrowserWindow({
     x: 1,
     y: 10,
-    width: 500,
+    width: 700,
     height: 1000,
     webPreferences: {
       webSecurity: false,
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
   if (process.env.NODE_ENV !== "production") {
@@ -38,7 +41,7 @@ const createWindow = async () => {
       url.format({
         pathname: path.join(__dirname, "index.html"),
         protocol: "file:",
-        slashes: true
+        slashes: true,
       })
     );
   }
