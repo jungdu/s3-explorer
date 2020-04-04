@@ -1,7 +1,10 @@
+import { getAllLocalFilesInFolder } from "@common/utils/fileSystem";
 import { getNameWithoutPath } from "@common/utils/format";
 import S3Controller from "@renderer/utils/aws/S3Controller";
+import fs from "fs";
 import { action, observable } from "mobx";
 import nanoid from "nanoid";
+import path from "path";
 import {
   BucketNames,
   FsFolder,
@@ -125,16 +128,28 @@ export class S3Store {
     this.selectedBucket = bucketName;
   }
 
-  private upload = (file: File): Promise<string> => {
-    if (this.currentFolder !== null) {
-      return this.s3Controller.upload(
-        this.getSelectedBucket(),
-        this.currentFolder.name,
-        file
+  private uploadFile = (
+    fileName: string,
+    uploadTo?: string
+  ): Promise<string> => {
+    return this.s3Controller.upload(
+      this.getSelectedBucket(),
+      uploadTo ? uploadTo : this.getCurrentFolder().name,
+      fileName
+    );
+  };
+
+  private uploadFolder = (folderPath: string): Promise<string[]> => {
+    return getAllLocalFilesInFolder(folderPath).then(filePaths => {
+      const destFolderInBucket = path.join(
+        this.getCurrentFolder().name,
+        getNameWithoutPath(folderPath)
       );
-    } else {
-      throw new Error("No currentFolder");
-    }
+
+      return Promise.all<string>(
+        filePaths.map(filePath => this.uploadFile(filePath, destFolderInBucket))
+      );
+    });
   };
 
   @action
@@ -292,14 +307,19 @@ export class S3Store {
     this.downloadFolder = folder;
   };
 
-  uploadFiles = (files: FileList): Promise<string[]> => {
-    const pms: Promise<string>[] = [];
+  uploadFiles = (files: FileList): Promise<(string | string[])[]> => {
+    const pms: Promise<string | string[]>[] = [];
     const prevFolder = this.currentFolder;
     for (let i = 0; i < files.length; i++) {
-      pms.push(this.upload(files[i]));
+      const filePath = files[i].path;
+      if (fs.statSync(filePath).isDirectory()) {
+        pms.push(this.uploadFolder(filePath));
+      } else {
+        pms.push(this.uploadFile(filePath));
+      }
     }
 
-    let returnValue: Array<string>;
+    let returnValue: Array<string | string[]>;
     return Promise.all(pms)
       .then(result => {
         returnValue = result;

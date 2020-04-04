@@ -212,11 +212,11 @@ export default class S3Controller {
     });
   }
 
-  upload = (bucketName: string, destDir: string, file: File) => {
+  upload = (bucketName: string, destDir: string, fileName: string) => {
     return new Promise<string>(resolve => {
       invoke<Message.Upload>({
         chanel: "UPLOAD",
-        message: { bucketName, destDir, filePath: file.path },
+        message: { bucketName, destDir, filePath: fileName },
       }).then(() => {
         resolve();
       });
