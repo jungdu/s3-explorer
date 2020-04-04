@@ -1,8 +1,8 @@
+import { getNameWithoutPath } from "@common/utils/format";
 import { s3 } from "@renderer/context";
 import FileSvg from "@renderer/image/file-24px.svg";
 import FolderSvg from "@renderer/image/folder_open-24px.svg";
 import { FsObject, FsType } from "@renderer/types/fs";
-import { getNameWithoutPath } from "@renderer/utils/format";
 import { useObserver } from "mobx-react";
 import React, { MouseEventHandler } from "react";
 import styled, { css } from "styled-components";
@@ -65,7 +65,7 @@ const FolderViewItem: React.FC<Props> = ({ fsObject }) =>
       addSelectedObject,
       deselectObject,
       openFolder,
-      selectObject
+      selectObject,
     } = s3.useStore();
 
     const handleClick: MouseEventHandler = (event): void => {

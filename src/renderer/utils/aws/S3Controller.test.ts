@@ -1,7 +1,6 @@
+import S3Controller from "./S3Controller";
 import dotenv from "dotenv";
 import fs from "fs";
-
-import S3Controller from "./S3Controller";
 
 dotenv.config();
 
@@ -17,7 +16,7 @@ const CONTENT_OF_FILE_IN_ROOT = "first"; // TEST_FILE_IN_ROOT에 쓰여진 내�
 const TEST_FILE_IN_FOLDER_IN_ROOT = "first-folder/file-in-folder.txt";
 const TEST_FOLDER_IN_ROOT = "first-folder/";
 
-describe("S3test with AWS SDK", () => {
+describe.skip("S3test with AWS SDK", () => {
   const s3Controller = new S3Controller();
 
   function setDefaultCredential() {
@@ -76,19 +75,7 @@ describe("S3test with AWS SDK", () => {
       });
   });
 
-  // TODO fs로 읽어와서 File로 만든 다음에 테스트 하도록 해야함
-  // test("Upload file", () => {
-  //   const sourcePath = path.resolve(__dirname, __filename);
-  //   console.log("sourcePath :", sourcePath);
-  //   return s3Controller
-  //     .upload(TEST_BUCKET, "S3Controller.test1.ts", sourcePath)
-  //     .then(result => {
-  //       console.log("result :", result);
-  //     });
-  // });
-
-  test.only("Create folder in bucket", () => {
-    // 주의할 점은
+  test("Create folder in bucket", () => {
     return s3Controller.mkdir(TEST_BUCKET, "newFolder/").then(result => {
       expect(result).toBe(true);
     });

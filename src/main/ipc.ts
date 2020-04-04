@@ -1,10 +1,34 @@
-import { IpcHandler } from "@common/types";
+import { HandlerEvent, Message } from "@common/types/ipc";
+import S3Controller from "@main/aws/S3Controller";
 import { ipcMain } from "electron";
 
-export function mainOn(arg: IpcHandler) {
-  ipcMain.on(arg.chanel, (event, message) => {
-    arg.handler(event, JSON.parse(message));
+interface HandleHandler<T extends Message.Base> extends Pick<T, "chanel"> {
+  handler: HandlerEvent<Electron.IpcMainInvokeEvent, T>;
+}
+
+export function invokeHandle<T extends Message.Base>(arg: HandleHandler<T>) {
+  ipcMain.handle(arg.chanel, (event, message) => {
+    return arg.handler(event, message);
   });
 }
 
-export function init() {}
+export function init() {
+  const s3Controller = new S3Controller();
+
+  invokeHandle<Message.SetCredential>({
+    chanel: "SET_CREDENTIAL",
+    handler: (electronEvent, message) => {
+      const { accessKeyId, secretAccessKey } = message;
+      s3Controller.setCredential(accessKeyId, secretAccessKey);
+      return Promise.resolve();
+    },
+  });
+
+  invokeHandle<Message.Upload>({
+    chanel: "UPLOAD",
+    handler: (electronEvent, message) => {
+      const { bucketName, destDir, filePath } = message;
+      return s3Controller.upload(bucketName, destDir, filePath);
+    },
+  });
+}

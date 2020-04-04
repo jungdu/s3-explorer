@@ -1,22 +1,22 @@
+import { Message } from "@common/types/ipc";
+import { invoke } from "@renderer/utils/ipc";
+import { notUndefined } from "@renderer/utils/typeGuards";
 import AWS from "aws-sdk";
-import S3, {
-  ListBucketsOutput,
-  ListObjectsV2Output,
-  GetObjectRequest
-} from "aws-sdk/clients/s3";
 import fs from "fs";
 import https from "https";
 import nanoid from "nanoid";
-import path from "path";
-
+import S3, {
+  ListBucketsOutput,
+  ListObjectsV2Output,
+  GetObjectRequest,
+} from "aws-sdk/clients/s3";
 import {
   BucketNames,
   FsObject,
   FsFile,
   FsType,
-  FsFolder
+  FsFolder,
 } from "@renderer/types/fs";
-import { notUndefined } from "@renderer/utils/typeGuards";
 
 export default class S3Controller {
   private s3: S3 | null = null;
@@ -47,7 +47,7 @@ export default class S3Controller {
             id: nanoid(),
             name: content.Key,
             type: FsType.FILE,
-            selected: false
+            selected: false,
           });
         }
       });
@@ -68,7 +68,7 @@ export default class S3Controller {
             name: prefix.Prefix,
             type: FsType.FOLDER,
             childNames: [],
-            selected: false
+            selected: false,
           };
           result.push(folder);
         }
@@ -84,7 +84,7 @@ export default class S3Controller {
           Bucket: bucketName,
           Delimiter: "/",
           Prefix: prefix,
-          StartAfter: prefix
+          StartAfter: prefix,
         },
         (err, data) => {
           if (err) {
@@ -123,7 +123,7 @@ export default class S3Controller {
     return new Promise<string>((resolve, reject) => {
       const params: GetObjectRequest = {
         Bucket: bucketName,
-        Key: srcFileName
+        Key: srcFileName,
       };
 
       this.getS3()
@@ -150,7 +150,7 @@ export default class S3Controller {
         this.getS3().putObject(
           {
             Bucket: bucketName,
-            Key: folderName
+            Key: folderName,
           },
           err => {
             if (err) {
@@ -176,7 +176,7 @@ export default class S3Controller {
       this.s3?.deleteObject(
         {
           Bucket: bucketName,
-          Key: fileName
+          Key: fileName,
         },
         err => {
           if (err) {
@@ -194,7 +194,7 @@ export default class S3Controller {
         accessKeyId,
         secretAccessKey,
         signatureVersion: "v4",
-        region: "ap-northeast-2"
+        region: "ap-northeast-2",
       });
 
       s3.listBuckets((err, data) => {
@@ -203,26 +203,23 @@ export default class S3Controller {
         }
 
         this.s3 = s3;
+        invoke<Message.SetCredential>({
+          chanel: "SET_CREDENTIAL",
+          message: { accessKeyId, secretAccessKey },
+        });
         return resolve(this.getBucketNames(data));
       });
     });
   }
 
-  upload(bucketName: string, destDir: string, file: File) {
-    return new Promise<string>((resolve, reject) => {
-      var params: S3.PutObjectRequest = {
-        Bucket: bucketName,
-        Key: path.join(destDir, file.name),
-        ContentType: file.type,
-        Body: file,
-        ACL: "public-read" // 접근 권한
-      };
-      this.getS3().putObject(params, function(err, data) {
-        if (err) {
-          reject(err);
-        }
-        resolve(data.ETag);
+  upload = (bucketName: string, destDir: string, file: File) => {
+    return new Promise<string>(resolve => {
+      invoke<Message.Upload>({
+        chanel: "UPLOAD",
+        message: { bucketName, destDir, filePath: file.path },
+      }).then(() => {
+        resolve();
       });
     });
-  }
+  };
 }

@@ -1,3 +1,7 @@
+import { getNameWithoutPath } from "@common/utils/format";
+import S3Controller from "@renderer/utils/aws/S3Controller";
+import { action, observable } from "mobx";
+import nanoid from "nanoid";
 import {
   BucketNames,
   FsFolder,
@@ -5,10 +9,6 @@ import {
   FsType,
   isFolder,
 } from "@renderer/types/fs";
-import S3Controller from "@renderer/utils/aws/S3Controller";
-import { getNameWithoutPath } from "@renderer/utils/format";
-import { action, observable } from "mobx";
-import nanoid from "nanoid";
 
 export class S3Store {
   s3Controller: S3Controller;

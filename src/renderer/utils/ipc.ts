@@ -1,7 +1,13 @@
-import { IpcMessage } from "@common/types";
+import { Message } from "@common/types/ipc";
 import { ipcRenderer } from "electron";
 
-export function send(arg: IpcMessage) {
-  const { chanel, ...message } = arg;
-  ipcRenderer.send(chanel, JSON.stringify(message));
+export function invoke<T extends Message.Base>(
+  arg: Pick<T, "chanel" | "message">
+): Promise<T["res"]> {
+  const { chanel, message } = arg;
+  return new Promise(resolve => {
+    ipcRenderer.invoke(chanel, message).then(result => {
+      resolve(result);
+    });
+  });
 }
