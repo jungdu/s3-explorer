@@ -25,7 +25,7 @@ export class S3Store {
   @observable downloadFolder: string = "";
   fsObjectsInBucket: Map<string, FsObject> | null = null;
   @observable bucketLoading: boolean = false;
-  @observable selectedBucket: string | null = null;
+  @observable currentBucket: string | null = null;
   @observable selectedObjects: Array<FsObject> = [];
 
   private generateFolder(name: string): FsFolder {
@@ -87,10 +87,10 @@ export class S3Store {
   }
 
   private getSelectedBucket(): string {
-    if (this.selectedBucket) {
-      return this.selectedBucket;
+    if (this.currentBucket) {
+      return this.currentBucket;
     } else {
-      throw new Error("No selectedBucket");
+      throw new Error("No currentBucket");
     }
   }
 
@@ -108,6 +108,13 @@ export class S3Store {
     return rootFolder;
   }
 
+  private resetFolderViewStatus() {
+    this.setCurrentBucket(null);
+    this.fsObjectsInBucket = null;
+    this.setCurrentFolder(null);
+    this.resetSelectedObjects();
+  }
+
   @action
   private setBucketLoading(loading: boolean) {
     this.bucketLoading = loading;
@@ -119,13 +126,13 @@ export class S3Store {
   }
 
   @action
-  private setCurrentFolder(folder: FsFolder) {
+  private setCurrentFolder(folder: FsFolder | null) {
     this.currentFolder = folder;
   }
 
   @action
-  private setSelectedBucket(bucketName: string) {
-    this.selectedBucket = bucketName;
+  private setCurrentBucket(bucketName: string | null) {
+    this.currentBucket = bucketName;
   }
 
   private uploadFile = (
@@ -218,6 +225,7 @@ export class S3Store {
   };
 
   openFolder = (folder: FsFolder) => {
+    this.resetSelectedObjects();
     this.s3Controller
       .ls(this.getSelectedBucket(), folder.name)
       .then(fsObjects => {
@@ -255,7 +263,7 @@ export class S3Store {
     this.s3Controller.ls(bucketName).then(fsObjects => {
       this.fsObjectsInBucket = new Map<string, FsObject>();
       const rootFolder = this.registerRootFolder();
-      this.setSelectedBucket(bucketName);
+      this.setCurrentBucket(bucketName);
       this.setChildrenOfFoler(rootFolder, fsObjects);
       this.setCurrentFolder(rootFolder);
     });
@@ -270,6 +278,8 @@ export class S3Store {
 
   setCredential = (accessKeyId: string, secretAccessKey: string) => {
     this.setBucketLoading(true);
+    this.resetFolderViewStatus();
+
     return this.s3Controller
       .setCredential(accessKeyId, secretAccessKey)
       .then(bucketNames => {
