@@ -15,6 +15,9 @@
     "strict": true,                            
     "baseUrl": ".",                       
     "paths": {
+      "@main/*": [
+        "src/main/*"
+      ],
       "@renderer/*": [
         "src/renderer/*"
       ],
