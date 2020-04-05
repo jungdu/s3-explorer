@@ -92,12 +92,17 @@ export function uploadFileByMultiPart(
       fileStream.on("data", chunk => {
         partNumber++;
         fileStream.pause();
-        uploadPart(s3, chunk, bucket, key, partNumber, uploadId).then(
-          completedPart => {
-            completedParts.push(completedPart);
-            fileStream.resume();
-          }
-        );
+        uploadPart(
+          s3,
+          chunk.toString(),
+          bucket,
+          key,
+          partNumber,
+          uploadId
+        ).then(completedPart => {
+          completedParts.push(completedPart);
+          fileStream.resume();
+        });
       });
 
       fileStream.on("end", () => {
