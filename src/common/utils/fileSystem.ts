@@ -53,3 +53,7 @@ function getLocalFilesInAFolder(
     });
   });
 }
+
+export function isDirectory(filePath: string): boolean {
+  return fs.statSync(filePath).isDirectory();
+}

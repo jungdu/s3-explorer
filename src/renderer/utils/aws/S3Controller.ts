@@ -1,4 +1,5 @@
 import { Message } from "@common/types/ipc";
+import { isFolderName } from "@common/utils/format";
 import { invoke } from "@renderer/utils/ipc";
 import { notUndefined } from "@renderer/utils/typeGuards";
 import AWS from "aws-sdk";
@@ -143,6 +144,50 @@ export default class S3Controller {
         });
     });
   }
+  // 버킷 내 폴더 내에 있는 모든 파일 Key를 recursive하게 가져온다.
+  getAllFileInFolder(
+    bucketName: string,
+    folderName: string
+  ): Promise<string[]> {
+    const keys: string[] = [folderName];
+    console.log("folderName :", folderName);
+    return this.getS3()
+      .listObjects({
+        Bucket: bucketName,
+        Prefix: folderName,
+      })
+      .promise()
+      .then(objects => {
+        const folderNames: string[] = [];
+        if (objects.Contents) {
+          objects.Contents.forEach(content => {
+            if (content.Key && content.Key !== folderName) {
+              if (isFolderName(content.Key)) {
+                folderNames.push(content.Key);
+              }
+              keys.push(content.Key);
+            }
+          });
+        }
+        if (folderNames.length > 0) {
+          return Promise.all(
+            folderNames.map(folderName =>
+              this.getAllFileInFolder(bucketName, folderName)
+            )
+          ).then(results => {
+            results.forEach(result => {
+              keys.concat(result);
+            });
+          });
+        } else {
+          return Promise.resolve();
+        }
+      })
+      .then(() => {
+        console.log("keys :", keys);
+        return keys;
+      });
+  }
 
   mkdir(bucketName: string, folderName: string): Promise<boolean> {
     if (this.validateFolderName(bucketName)) {
@@ -171,9 +216,10 @@ export default class S3Controller {
     );
   }
 
-  rm(bucketName: string, fileName: string): Promise<boolean> {
+  rmFile(bucketName: string, fileName: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.s3?.deleteObject(
+      console.log("fileName :", fileName);
+      this.getS3().deleteObject(
         {
           Bucket: bucketName,
           Key: fileName,
@@ -186,6 +232,24 @@ export default class S3Controller {
         }
       );
     });
+  }
+
+  rmFolder(bucketName: string, folderName: string): Promise<boolean> {
+    return this.getAllFileInFolder(bucketName, folderName)
+      .then(fileNames => {
+        const objects = fileNames.map(fileName => ({ Key: fileName }));
+        return this.getS3()
+          .deleteObjects({
+            Bucket: bucketName,
+            Delete: {
+              Objects: objects,
+            },
+          })
+          .promise();
+      })
+      .then(() => {
+        return true;
+      });
   }
 
   setCredential(accessKeyId: string, secretAccessKey: string) {

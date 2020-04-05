@@ -1,10 +1,16 @@
-import { getAllLocalFilesInFolder } from "@common/utils/fileSystem";
-import { getNameWithoutPath } from "@common/utils/format";
 import S3Controller from "@renderer/utils/aws/S3Controller";
-import fs from "fs";
 import { action, observable } from "mobx";
 import nanoid from "nanoid";
 import path from "path";
+import {
+  getNameWithoutPath,
+  getRelativeParentFolderName,
+  isFolderName,
+} from "@common/utils/format";
+import {
+  getAllLocalFilesInFolder,
+  isDirectory,
+} from "@common/utils/fileSystem";
 import {
   BucketNames,
   FsFolder,
@@ -146,15 +152,17 @@ export class S3Store {
     );
   };
 
-  private uploadFolder = (folderPath: string): Promise<string[]> => {
-    return getAllLocalFilesInFolder(folderPath).then(filePaths => {
-      const destFolderInBucket = path.join(
-        this.getCurrentFolder().name,
-        getNameWithoutPath(folderPath)
-      );
-
+  private uploadFolder = (localFolderPath: string): Promise<string[]> => {
+    return getAllLocalFilesInFolder(localFolderPath).then(localFilePaths => {
       return Promise.all<string>(
-        filePaths.map(filePath => this.uploadFile(filePath, destFolderInBucket))
+        localFilePaths.map(localFilePath => {
+          const destFolderInBucket = path.join(
+            this.getCurrentFolder().name,
+            getNameWithoutPath(localFolderPath),
+            getRelativeParentFolderName(localFolderPath, localFilePath)
+          );
+          return this.uploadFile(localFilePath, destFolderInBucket);
+        })
       );
     });
   };
@@ -176,7 +184,18 @@ export class S3Store {
     let returnValue: Array<boolean>;
     return Promise.all(
       this.selectedObjects.map(selectedObj => {
-        return this.s3Controller.rm(this.getSelectedBucket(), selectedObj.name);
+        if (isFolderName(selectedObj.name)) {
+          console.log(" 폴더 지울꼬당 ");
+          return this.s3Controller.rmFolder(
+            this.getSelectedBucket(),
+            selectedObj.name
+          );
+        } else {
+          return this.s3Controller.rmFile(
+            this.getSelectedBucket(),
+            selectedObj.name
+          );
+        }
       })
     )
       .then(result => {
@@ -322,7 +341,7 @@ export class S3Store {
     const prevFolder = this.currentFolder;
     for (let i = 0; i < files.length; i++) {
       const filePath = files[i].path;
-      if (fs.statSync(filePath).isDirectory()) {
+      if (isDirectory(filePath)) {
         pms.push(this.uploadFolder(filePath));
       } else {
         pms.push(this.uploadFile(filePath));
@@ -330,6 +349,8 @@ export class S3Store {
     }
 
     let returnValue: Array<string | string[]>;
+
+    // TODO 업로드 실패한 파일 처리 해야함.
     return Promise.all(pms)
       .then(result => {
         returnValue = result;
