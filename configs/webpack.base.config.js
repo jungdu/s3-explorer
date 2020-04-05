@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const dotenv = require('dotenv').config({path: path.join(__dirname,"..",'.env')});
 
-function getEnvVariables(parsedEnv){
+function getEnvVariables(parsedEnv = {}){
     const result = [];
     const keys = Object.keys(parsedEnv);
     keys.forEach( key => result.push({
