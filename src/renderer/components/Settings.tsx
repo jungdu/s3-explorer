@@ -1,5 +1,5 @@
 import { CredentialContainer } from "@renderer/components/Credential";
-import { default as DownloadDirectoryOrig } from "@renderer/components/DownloadFolder";
+import { default as DownloadDirectoryOrig } from "@renderer/components/DownloadPath";
 import SideMenu from "@renderer/components/SideMenu";
 import React from "react";
 import styled from "styled-components";

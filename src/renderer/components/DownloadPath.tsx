@@ -36,7 +36,7 @@ interface Props {
 
 const DownloadDirectory: React.FC<Props> = ({ className }) => {
   return useObserver(() => {
-    const { downloadFolder, setDownloadFolder } = s3.useStore();
+    const { downloadPath, setDownloadPath } = s3.useStore();
     const handleClickSetFolderButton = () => {
       remote.dialog
         .showOpenDialog(remote.getCurrentWindow(), {
@@ -44,7 +44,7 @@ const DownloadDirectory: React.FC<Props> = ({ className }) => {
         })
         .then(result => {
           if (result.filePaths && result.filePaths[0]) {
-            setDownloadFolder(result.filePaths[0] + "/");
+            setDownloadPath(result.filePaths[0] + "/");
           }
         });
     };
@@ -53,7 +53,7 @@ const DownloadDirectory: React.FC<Props> = ({ className }) => {
       <Self className={className} onClick={handleClickSetFolderButton}>
         <ArchiveIcon />
         <FolderName>
-          {downloadFolder ? downloadFolder : "다운로드 할 폴더를 선택해 주세요"}
+          {downloadPath ? downloadPath : "다운로드 할 폴더를 선택해 주세요"}
         </FolderName>
       </Self>
     );

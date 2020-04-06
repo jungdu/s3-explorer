@@ -28,7 +28,7 @@ export class S3Store {
 
   @observable bucketNames: BucketNames = [];
   @observable currentFolder: FsFolder | null = null;
-  @observable downloadFolder: string = "";
+  @observable downloadPath: string = "";
   fsObjectsInBucket: Map<string, FsObject> | null = null;
   @observable bucketLoading: boolean = false;
   @observable currentBucket: string | null = null;
@@ -225,7 +225,7 @@ export class S3Store {
           return this.s3Controller.download(
             this.getSelectedBucket(),
             selectedObj.name,
-            `${this.downloadFolder}${getNameWithoutPath(selectedObj.name)}`
+            `${this.downloadPath}${getNameWithoutPath(selectedObj.name)}`
           );
         } else {
           throw new Error("SelectedObject isn't selected ");
@@ -332,8 +332,8 @@ export class S3Store {
   }
 
   @action
-  setDownloadFolder = (folder: string) => {
-    this.downloadFolder = folder;
+  setDownloadPath = (folder: string) => {
+    this.downloadPath = folder;
   };
 
   uploadFiles = (files: FileList): Promise<(string | string[])[]> => {
