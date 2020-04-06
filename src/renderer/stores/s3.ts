@@ -217,7 +217,7 @@ export class S3Store {
     fsObject.selected = false;
   };
 
-  downloadSelectedObject = () => {
+  downloadSelectedObjects = () => {
     return Promise.all(
       this.selectedObjects.map(selectedObj => {
         if (selectedObj.selected) {

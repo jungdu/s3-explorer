@@ -1,6 +1,6 @@
-import S3Controller from "./S3Controller";
 import dotenv from "dotenv";
 import fs from "fs";
+import S3Controller from "./S3Controller";
 
 dotenv.config();
 
@@ -61,12 +61,12 @@ describe.skip("S3test with AWS SDK", () => {
   });
 
   test("Download file", () => {
-    const distPath = `${process.cwd()}/download/${TEST_FILE_IN_ROOT}`;
+    const destPath = `${process.cwd()}/download/${TEST_FILE_IN_ROOT}`;
     return s3Controller
-      .download(TEST_BUCKET, TEST_FILE_IN_ROOT, distPath)
+      .download(TEST_BUCKET, TEST_FILE_IN_ROOT, destPath)
       .then(fileName => {
         expect(fileName).toEqual(TEST_FILE_IN_ROOT);
-        expect(fs.readFileSync(distPath, "utf8")).toEqual(
+        expect(fs.readFileSync(destPath, "utf8")).toEqual(
           CONTENT_OF_FILE_IN_ROOT
         );
       })

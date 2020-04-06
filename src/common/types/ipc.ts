@@ -10,6 +10,16 @@ export namespace Message {
     res: any;
   }
 
+  export interface Download {
+    chanel: "DOWNLOAD";
+    message: {
+      bucketName: string;
+      srcFileName: string;
+      destPath: string;
+    };
+    res: string;
+  }
+
   export interface SetCredential {
     chanel: "SET_CREDENTIAL";
     message: {

@@ -3,14 +3,8 @@ import { isFolderName } from "@common/utils/format";
 import { invoke } from "@renderer/utils/ipc";
 import { notUndefined } from "@renderer/utils/typeGuards";
 import AWS from "aws-sdk";
-import fs from "fs";
-import https from "https";
+import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 import nanoid from "nanoid";
-import S3, {
-  ListBucketsOutput,
-  ListObjectsV2Output,
-  GetObjectRequest,
-} from "aws-sdk/clients/s3";
 import {
   BucketNames,
   FsObject,
@@ -119,29 +113,11 @@ export default class S3Controller {
   download(
     bucketName: string,
     srcFileName: string,
-    distPath: string
+    destPath: string
   ): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      const params: GetObjectRequest = {
-        Bucket: bucketName,
-        Key: srcFileName,
-      };
-
-      this.getS3()
-        .getSignedUrlPromise("getObject", params)
-        .then(signedUrl => {
-          https.get(signedUrl).on("response", function(res) {
-            const writeStream = fs.createWriteStream(distPath);
-            res
-              .pipe(writeStream)
-              .on("finish", () => {
-                resolve(distPath);
-              })
-              .on("error", err => {
-                reject({ ...err, srcFileName });
-              });
-          });
-        });
+    return invoke<Message.Download>({
+      chanel: "DOWNLOAD",
+      message: { bucketName, srcFileName, destPath },
     });
   }
   // 버킷 내 폴더 내에 있는 모든 파일 Key를 recursive하게 가져온다.

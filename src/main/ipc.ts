@@ -15,6 +15,14 @@ export function invokeHandle<T extends Message.Base>(arg: HandleHandler<T>) {
 export function init() {
   const s3Controller = new S3Controller();
 
+  invokeHandle<Message.Download>({
+    chanel: "DOWNLOAD",
+    handler: (event, message) => {
+      const { bucketName, srcFileName, destPath } = message;
+      return s3Controller.download(bucketName, srcFileName, destPath);
+    },
+  });
+
   invokeHandle<Message.SetCredential>({
     chanel: "SET_CREDENTIAL",
     handler: (electronEvent, message) => {

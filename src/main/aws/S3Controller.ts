@@ -14,6 +14,29 @@ export default class S3Controller {
     }
   }
 
+  download(
+    bucketName: string,
+    srcFileName: string,
+    destPath: string
+  ): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      console.log("bucketName :", bucketName);
+      const writeStream = fs.createWriteStream(destPath);
+
+      this.getS3()
+        .getObject({
+          Bucket: bucketName,
+          Key: srcFileName,
+        })
+        .createReadStream()
+        .pipe(writeStream)
+        .on("error", reject)
+        .on("close", function() {
+          resolve(srcFileName);
+        });
+    });
+  }
+
   setCredential(accessKeyId: string, secretAccessKey: string) {
     this.s3 = new AWS.S3({
       accessKeyId,
