@@ -290,6 +290,7 @@ export class S3Store {
     this.selectedObjects.forEach(fsObject => {
       fsObject.selected = false;
     });
+    this.selectedObjects = [];
   };
 
   @action
