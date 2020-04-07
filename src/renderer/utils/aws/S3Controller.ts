@@ -100,7 +100,6 @@ export default class S3Controller {
   }
 
   private validateFolderName(folderName: string): boolean {
-    console.log("folderName :", folderName);
     if (
       folderName.length > 0 &&
       folderName.charAt(folderName.length - 1) !== "/"
@@ -126,7 +125,6 @@ export default class S3Controller {
     folderName: string
   ): Promise<string[]> {
     const keys: string[] = [folderName];
-    console.log("folderName :", folderName);
     return this.getS3()
       .listObjects({
         Bucket: bucketName,
@@ -160,7 +158,6 @@ export default class S3Controller {
         }
       })
       .then(() => {
-        console.log("keys :", keys);
         return keys;
       });
   }
@@ -194,7 +191,6 @@ export default class S3Controller {
 
   rmFile(bucketName: string, fileName: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      console.log("fileName :", fileName);
       this.getS3().deleteObject(
         {
           Bucket: bucketName,

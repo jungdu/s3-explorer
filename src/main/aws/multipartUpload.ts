@@ -26,7 +26,6 @@ function uploadPart(
       if (err) {
         reject(err);
       } else {
-        console.log(data);
         resolve({
           ETag: data.ETag,
           PartNumber: partNumber,

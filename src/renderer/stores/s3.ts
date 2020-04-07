@@ -185,7 +185,6 @@ export class S3Store {
     return Promise.all(
       this.selectedObjects.map(selectedObj => {
         if (isFolderName(selectedObj.name)) {
-          console.log(" 폴더 지울꼬당 ");
           return this.s3Controller.rmFolder(
             this.getSelectedBucket(),
             selectedObj.name
@@ -231,7 +230,9 @@ export class S3Store {
           throw new Error("SelectedObject isn't selected ");
         }
       })
-    ).then(results => console.log("results :", results));
+    ).then(() => {
+      // TODO 다운로드 완료된 파일들 다운로드 완료 되었다고 표시
+    });
   };
 
   getFsObject = (name: string): FsObject => {

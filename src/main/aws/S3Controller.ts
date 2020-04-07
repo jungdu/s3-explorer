@@ -20,7 +20,6 @@ export default class S3Controller {
     destPath: string
   ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      console.log("bucketName :", bucketName);
       const writeStream = fs.createWriteStream(destPath);
 
       this.getS3()

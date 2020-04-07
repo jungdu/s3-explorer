@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { useObserver } from "mobx-react";
-import styled, { css } from "styled-components";
-
 import { s3 } from "@renderer/context";
-
+import { useObserver } from "mobx-react";
+import React, { useState } from "react";
+import styled, { css } from "styled-components";
 import FolderViewItem from "./FolderViewItem";
 
 const dragOverStyle = css`
@@ -68,9 +66,7 @@ const FolderView: React.FC = () => {
       event.stopPropagation();
       setIsDragOver(false);
       if (event.dataTransfer) {
-        uploadFiles(event.dataTransfer.files).then(result => {
-          console.log("result :", result);
-        });
+        uploadFiles(event.dataTransfer.files).then(() => {});
       }
     };
 
