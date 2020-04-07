@@ -1,10 +1,15 @@
 import { Message } from "@common/types/ipc";
-import { isFolderName } from "@common/utils/format";
 import { invoke } from "@renderer/utils/ipc";
 import { notUndefined } from "@renderer/utils/typeGuards";
 import AWS from "aws-sdk";
 import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
 import nanoid from "nanoid";
+import path from "path";
+import {
+  getRelativeFileName,
+  isFolderName,
+  getNameWithoutPath,
+} from "@common/utils/format";
 import {
   BucketNames,
   FsObject,
@@ -109,6 +114,29 @@ export default class S3Controller {
     return false;
   }
 
+  downloadFolder(
+    bucketName: string,
+    srcFolderName: string,
+    destPath: string
+  ): Promise<string[]> {
+    return this.getAllFileInFolder(bucketName, srcFolderName).then(
+      srcFileNames => {
+        const pms = srcFileNames.map(srcFileName => {
+          return this.download(
+            bucketName,
+            srcFileName,
+            path.join(
+              destPath,
+              getNameWithoutPath(srcFolderName),
+              getRelativeFileName(srcFolderName, srcFileName)
+            )
+          );
+        });
+        return Promise.all(pms);
+      }
+    );
+  }
+
   download(
     bucketName: string,
     srcFileName: string,
@@ -119,8 +147,18 @@ export default class S3Controller {
       message: { bucketName, srcFileName, destPath },
     });
   }
-  // 버킷 내 폴더 내에 있는 모든 파일 Key를 recursive하게 가져온다.
+
   getAllFileInFolder(
+    bucketName: string,
+    folderName: string
+  ): Promise<string[]> {
+    return this.getAllObjectInFolder(bucketName, folderName).then(objects => {
+      return objects.filter(object => !isFolderName(object));
+    });
+  }
+
+  // 버킷 내 폴더 내에 있는 모든 파일 Key를 recursive하게 가져온다.
+  getAllObjectInFolder(
     bucketName: string,
     folderName: string
   ): Promise<string[]> {
@@ -146,7 +184,7 @@ export default class S3Controller {
         if (folderNames.length > 0) {
           return Promise.all(
             folderNames.map(folderName =>
-              this.getAllFileInFolder(bucketName, folderName)
+              this.getAllObjectInFolder(bucketName, folderName)
             )
           ).then(results => {
             results.forEach(result => {
@@ -207,7 +245,7 @@ export default class S3Controller {
   }
 
   rmFolder(bucketName: string, folderName: string): Promise<boolean> {
-    return this.getAllFileInFolder(bucketName, folderName)
+    return this.getAllObjectInFolder(bucketName, folderName)
       .then(fileNames => {
         const objects = fileNames.map(fileName => ({ Key: fileName }));
         return this.getS3()

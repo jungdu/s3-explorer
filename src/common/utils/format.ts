@@ -1,3 +1,14 @@
+export function getLocalPathWithoutName(name: string): string {
+  return (
+    "/" +
+    name
+      .split("/")
+      .filter(splitedName => !!splitedName)
+      .slice(0, -1)
+      .join("/")
+  );
+}
+
 export function getNameWithoutPath(name: string): string {
   return name
     .split("/")
@@ -13,8 +24,11 @@ function getParentFolderName(name: string): string {
     .join("/");
 }
 
-function getRelativeFileName(basePath: string, absolutePath: string): string {
-  if (basePath.indexOf(absolutePath) !== 0) {
+export function getRelativeFileName(
+  basePath: string,
+  absolutePath: string
+): string {
+  if (absolutePath.indexOf(basePath) === 0) {
     return absolutePath.replace(basePath, "");
   } else {
     throw new Error(

@@ -84,6 +84,14 @@ export class S3Store {
     }
   }
 
+  private getDownloadPath(): string {
+    if (this.downloadPath) {
+      return this.downloadPath;
+    } else {
+      throw new Error("No downloadPath");
+    }
+  }
+
   private getFsObjectsInBucket(): Map<string, FsObject> {
     if (this.fsObjectsInBucket) {
       return this.fsObjectsInBucket;
@@ -92,7 +100,7 @@ export class S3Store {
     }
   }
 
-  private getSelectedBucket(): string {
+  private getcurrentBucket(): string {
     if (this.currentBucket) {
       return this.currentBucket;
     } else {
@@ -146,7 +154,7 @@ export class S3Store {
     uploadTo?: string
   ): Promise<string> => {
     return this.s3Controller.upload(
-      this.getSelectedBucket(),
+      this.getcurrentBucket(),
       uploadTo ? uploadTo : this.getCurrentFolder().name,
       fileName
     );
@@ -174,7 +182,7 @@ export class S3Store {
   };
 
   createFolder = (folderName: string) => {
-    this.s3Controller.mkdir(this.getSelectedBucket(), folderName).then(() => {
+    this.s3Controller.mkdir(this.getcurrentBucket(), folderName).then(() => {
       this.refreshCurrentFolder();
     });
   };
@@ -186,12 +194,12 @@ export class S3Store {
       this.selectedObjects.map(selectedObj => {
         if (isFolderName(selectedObj.name)) {
           return this.s3Controller.rmFolder(
-            this.getSelectedBucket(),
+            this.getcurrentBucket(),
             selectedObj.name
           );
         } else {
           return this.s3Controller.rmFile(
-            this.getSelectedBucket(),
+            this.getcurrentBucket(),
             selectedObj.name
           );
         }
@@ -216,23 +224,29 @@ export class S3Store {
     fsObject.selected = false;
   };
 
-  downloadSelectedObjects = () => {
-    return Promise.all(
-      this.selectedObjects.map(selectedObj => {
-        if (selectedObj.selected) {
-          selectedObj.name;
-          return this.s3Controller.download(
-            this.getSelectedBucket(),
-            selectedObj.name,
-            `${this.downloadPath}${getNameWithoutPath(selectedObj.name)}`
-          );
-        } else {
-          throw new Error("SelectedObject isn't selected ");
-        }
-      })
-    ).then(() => {
-      // TODO 다운로드 완료된 파일들 다운로드 완료 되었다고 표시
+  downloadSelectedObjects: () => Promise<(string | string[])[]> = () => {
+    const pms = this.selectedObjects.map(selectedObj => {
+      if (selectedObj.type === FsType.FOLDER) {
+        return this.s3Controller.downloadFolder(
+          this.getcurrentBucket(),
+          selectedObj.name,
+          this.getDownloadPath()
+        );
+      } else {
+        return this.s3Controller.download(
+          this.getcurrentBucket(),
+          selectedObj.name,
+          `${this.getDownloadPath()}${getNameWithoutPath(selectedObj.name)}`
+        );
+      }
     });
+
+    return Promise.all<string | string[]>(pms).then(
+      (results: (string | string[])[]) => {
+        console.log("results :", results);
+        return results;
+      }
+    );
   };
 
   getFsObject = (name: string): FsObject => {
@@ -247,7 +261,7 @@ export class S3Store {
   openFolder = (folder: FsFolder) => {
     this.resetSelectedObjects();
     this.s3Controller
-      .ls(this.getSelectedBucket(), folder.name)
+      .ls(this.getcurrentBucket(), folder.name)
       .then(fsObjects => {
         this.setChildrenOfFoler(folder, fsObjects);
         this.setCurrentFolder(folder);
@@ -264,7 +278,7 @@ export class S3Store {
   };
 
   openCurrentBucket = () => {
-    this.selectBucket(this.getSelectedBucket());
+    this.selectBucket(this.getcurrentBucket());
   };
 
   refreshCurrentFolder() {

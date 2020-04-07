@@ -1,7 +1,10 @@
-import { getNameWithoutPath } from "@common/utils/format";
 import AWS, { S3 } from "aws-sdk";
 import fs from "fs";
 import path from "path";
+import {
+  getNameWithoutPath,
+  getLocalPathWithoutName,
+} from "@common/utils/format";
 
 export default class S3Controller {
   private s3: S3 | null = null;
@@ -29,7 +32,25 @@ export default class S3Controller {
         })
         .createReadStream()
         .pipe(writeStream)
-        .on("error", reject)
+        .on("error", (err: any) => {
+          if (err.code === "ENOENT") {
+            fs.mkdir(
+              getLocalPathWithoutName(destPath),
+              { recursive: true },
+              err => {
+                if (err) {
+                  reject(err);
+                } else {
+                  this.download(bucketName, srcFileName, destPath).then(
+                    resolve
+                  );
+                }
+              }
+            );
+          } else {
+            reject(err);
+          }
+        })
         .on("close", function() {
           resolve(srcFileName);
         });
