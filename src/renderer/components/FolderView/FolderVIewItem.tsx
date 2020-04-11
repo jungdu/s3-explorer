@@ -22,7 +22,7 @@ const selectedItemStyle = css`
 const Item = styled.div<{ selected: boolean }>`
   position: relative;
   display: inline-block;
-  padding: 5px;
+  padding: 5px 0;
   margin: 4px 4px 0 4px;
   cursor: pointer;
 
@@ -46,6 +46,7 @@ const ItemText = styled.div`
   display: -webkit-box;
   width: 100px;
   height: 28px;
+  padding: 0 3px;
   overflow: hidden;
   text-align: center;
   text-overflow: ellipsis;

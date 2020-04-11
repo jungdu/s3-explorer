@@ -1,9 +1,9 @@
-import { BucketContainer } from "@renderer/components/Bucket";
+import Buckets from "@renderer/components/Buckets";
 import Settings from "@renderer/components/Settings";
 import { uiState } from "@renderer/context";
+import { useObserver } from "mobx-react";
 import React from "react";
 import styled from "styled-components";
-import { useObserver } from "mobx-react";
 
 const Self = styled.div<{ sidebarShown: boolean }>`
   ${props => (props.sidebarShown ? "flex-basis: 300px;" : "flex-basis: 0px;")}
@@ -20,7 +20,7 @@ const SideBar: React.FC = () =>
     return (
       <Self sidebarShown={sidebarShown}>
         <Settings></Settings>
-        <BucketContainer></BucketContainer>
+        <Buckets></Buckets>
       </Self>
     );
   });
