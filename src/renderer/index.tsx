@@ -1,15 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { ThemeProvider } from "styled-components";
 import { AppContainer } from "react-hot-loader";
-
-import theme from "./theme";
+import { ThemeProvider } from "styled-components";
 import Application from "./components/Application";
 import { s3, uiState } from "./context";
+import theme from "./theme";
 
 // Create main element
-const mainElement = document.createElement("div");
-document.body.appendChild(mainElement);
+const mainElement = document.getElementById("app");
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

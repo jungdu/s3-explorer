@@ -16,6 +16,7 @@ ${reset};
         background-color:#fff;
     }
     button {
+        cursor: pointer;
         background: none;
         border: none;
         &:active, &:focus {

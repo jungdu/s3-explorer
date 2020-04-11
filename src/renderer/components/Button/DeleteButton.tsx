@@ -1,9 +1,10 @@
-import React, { useCallback } from "react";
-import styled from "styled-components";
+import DeletePopup from "@renderer/components/Popup/DeletePopup";
 import { s3 } from "@renderer/context";
-import { useObserver } from "mobx-react";
-import { actionButtonStyle } from "./constants";
 import IcDelete from "@renderer/image/IcDelete";
+import { useObserver } from "mobx-react";
+import React, { useCallback, useState } from "react";
+import styled from "styled-components";
+import { actionButtonStyle } from "./constants";
 
 const Self = styled.button`
   ${actionButtonStyle}
@@ -13,23 +14,38 @@ interface Props {
   className?: string;
 }
 
-const DeleteButton: React.FC<Props> = ({ className }) =>
-  useObserver(() => {
-    const { deleteSelectedObjects, selectedObjects } = s3.useStore();
+const DeleteButton: React.FC<Props> = ({ className }) => {
+  const [popupShown, setPopupShown] = useState<boolean>(false);
 
-    const handleOnClick = useCallback(() => {
-      deleteSelectedObjects();
-    }, []);
+  const handleOnClick = useCallback(() => {
+    setPopupShown(true);
+  }, [popupShown]);
+
+  const hidePopup = useCallback(() => {
+    setPopupShown(false);
+  }, [popupShown]);
+
+  return useObserver(() => {
+    const { selectedObjects } = s3.useStore();
 
     return (
-      <Self
-        className={className}
-        onClick={handleOnClick}
-        disabled={selectedObjects.length === 0}
-      >
-        <IcDelete />
-      </Self>
+      <>
+        <Self
+          className={className}
+          onClick={handleOnClick}
+          disabled={selectedObjects.length === 0}
+        >
+          <IcDelete />
+        </Self>
+        <DeletePopup
+          shown={popupShown}
+          hidePopup={() => {
+            hidePopup();
+          }}
+        />
+      </>
     );
   });
+};
 
 export default DeleteButton;

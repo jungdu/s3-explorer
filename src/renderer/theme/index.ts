@@ -3,6 +3,8 @@ const theme = {
   hoveredObjectNameColor: "#000",
   objectNameColor: "#555",
   color: {
+    fontPrimary: "#444",
+    fontSecondary: "#999",
     grey: "#666",
     greyLight: "#ccc",
     primary: "#8C9EFF",
