@@ -1,6 +1,7 @@
 import { css } from "styled-components";
 
 export const actionButtonStyle = css`
+  position: relative;
   padding: 0;
   margin: 0;
   svg path {

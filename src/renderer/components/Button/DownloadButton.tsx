@@ -1,3 +1,4 @@
+import ToolTip from "@renderer/components/Tooltip";
 import { s3 } from "@renderer/context";
 import IcDownload from "@renderer/image/IcDownload";
 import { useObserver } from "mobx-react";
@@ -16,6 +17,7 @@ interface Props {
 const DownloadButtton: React.FC<Props> = ({ className }) =>
   useObserver(() => {
     const { downloadSelectedObjects, selectedObjects } = s3.useStore();
+    const disalbed = selectedObjects.length === 0;
 
     const handleOnClick = useCallback(() => {
       downloadSelectedObjects();
@@ -27,6 +29,7 @@ const DownloadButtton: React.FC<Props> = ({ className }) =>
         onClick={handleOnClick}
         disabled={selectedObjects.length === 0}
       >
+        {!disalbed && <ToolTip direction="BOTTOM">DELETE</ToolTip>}
         <IcDownload />
       </Self>
     );

@@ -1,4 +1,5 @@
 import DeletePopup from "@renderer/components/Popup/DeletePopup";
+import ToolTip from "@renderer/components/Tooltip";
 import { s3 } from "@renderer/context";
 import IcDelete from "@renderer/image/IcDelete";
 import { useObserver } from "mobx-react";
@@ -27,14 +28,12 @@ const DeleteButton: React.FC<Props> = ({ className }) => {
 
   return useObserver(() => {
     const { selectedObjects } = s3.useStore();
+    const disabled = selectedObjects.length === 0;
 
     return (
       <>
-        <Self
-          className={className}
-          onClick={handleOnClick}
-          disabled={selectedObjects.length === 0}
-        >
+        <Self className={className} onClick={handleOnClick} disabled={disabled}>
+          {!disabled && <ToolTip direction="BOTTOM">DELETE</ToolTip>}
           <IcDelete />
         </Self>
         <DeletePopup
