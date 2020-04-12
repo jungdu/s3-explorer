@@ -3,6 +3,11 @@ import { action, observable } from "mobx";
 import nanoid from "nanoid";
 import path from "path";
 import {
+  getStorageItem,
+  ItemKey,
+  setStorageItem,
+} from "@renderer/utils/localStorage";
+import {
   getNameWithoutPath,
   getRelativeParentFolderName,
   isFolderName,
@@ -24,6 +29,8 @@ export class S3Store {
 
   constructor(s3Controller: S3Controller) {
     this.s3Controller = s3Controller;
+
+    this.initDownloadPath();
   }
 
   @observable bucketNames: BucketNames = [];
@@ -105,6 +112,13 @@ export class S3Store {
       return this.currentBucket;
     } else {
       throw new Error("No currentBucket");
+    }
+  }
+
+  private initDownloadPath() {
+    const prevDownloadPath = getStorageItem(ItemKey.DOWNLOAD_PATH);
+    if (prevDownloadPath) {
+      this.setDownloadPath(prevDownloadPath);
     }
   }
 
@@ -350,6 +364,7 @@ export class S3Store {
   @action
   setDownloadPath = (folder: string) => {
     this.downloadPath = folder;
+    setStorageItem(ItemKey.DOWNLOAD_PATH, folder);
   };
 
   uploadFiles = (files: FileList): Promise<(string | string[])[]> => {
