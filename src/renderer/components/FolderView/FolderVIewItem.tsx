@@ -1,11 +1,14 @@
+import { useObserver } from "mobx-react";
+import React, { MouseEventHandler } from "react";
+import styled, { css } from "styled-components";
+
 import { getNameWithoutPath } from "@common/utils/format";
 import { s3 } from "@renderer/context";
 import FileSvg from "@renderer/image/file-24px.svg";
 import FolderSvg from "@renderer/image/folder_open-24px.svg";
 import { FsObject, FsType } from "@renderer/types/fs";
-import { useObserver } from "mobx-react";
-import React, { MouseEventHandler } from "react";
-import styled, { css } from "styled-components";
+
+const folderItemBorderRadius = "5px";
 
 const selectedItemStyle = css`
   &:after {
@@ -16,6 +19,7 @@ const selectedItemStyle = css`
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 255, 0.2);
+    border-radius: ${folderItemBorderRadius};
   }
 `;
 
@@ -25,6 +29,7 @@ const Item = styled.div<{ selected: boolean }>`
   padding: 5px 0;
   margin: 4px 4px 0 4px;
   cursor: pointer;
+  border-radius: ${folderItemBorderRadius};
 
   &:hover {
     background-color: #ccc;
