@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import PopupPortal from "./PopupPortal";
+import Portal from "@renderer/components/Portal";
 
 const Self = styled.div`
   position: absolute;
@@ -41,14 +41,14 @@ const Popup: React.FC<Props> = ({ children, shown, title }) => {
   return (
     <>
       {shown && (
-        <PopupPortal>
+        <Portal elId="popup">
           <Background>
             <Self>
               <Title>{title}</Title>
               {children}
             </Self>
           </Background>
-        </PopupPortal>
+        </Portal>
       )}
     </>
   );

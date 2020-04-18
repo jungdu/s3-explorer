@@ -1,7 +1,11 @@
 import ReactDOM from "react-dom";
 
-const PopupPortal: React.FC = ({ children }) => {
-  const el = document.getElementById("popup");
+interface Props {
+  elId: string;
+}
+
+const Portal: React.FC<Props> = ({ children, elId }) => {
+  const el = document.getElementById(elId);
   if (!el) {
     throw new Error("no modal element in html template to open the portal");
   }
@@ -9,4 +13,4 @@ const PopupPortal: React.FC = ({ children }) => {
   return ReactDOM.createPortal(children, el);
 };
 
-export default PopupPortal;
+export default Portal;
