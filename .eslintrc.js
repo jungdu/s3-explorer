@@ -26,7 +26,8 @@ module.exports = {
     "plugins": [
         "react",
         "@typescript-eslint",
-        "prettier"
+        "prettier",
+        "simple-import-sort"
     ],
     "rules": {
         "react/prop-types": "off",
@@ -37,7 +38,10 @@ module.exports = {
             {
                 "trailingComma": "es5"
             }
-        ]
+        ],
+        "sort-imports": "off",
+        "import/order": "off",
+        "simple-import-sort/sort": "error"
     },
     "settings": {
         "react": {
