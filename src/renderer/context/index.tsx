@@ -20,7 +20,7 @@ function createConnector<T>(storeInstance: T) {
 }
 
 const s3Store = new S3Store(new S3Controller());
-const uiStateStore = new UiState();
+export const uiStateStore = new UiState();
 
 export const s3 = createConnector(s3Store);
 export const uiState = createConnector(uiStateStore);

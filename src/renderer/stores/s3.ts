@@ -1,21 +1,13 @@
-import S3Controller from "@renderer/utils/aws/S3Controller";
-import { action, observable } from "mobx";
-import nanoid from "nanoid";
-import path from "path";
 import {
-  getStorageItem,
-  ItemKey,
-  setStorageItem,
-} from "@renderer/utils/localStorage";
+  getAllLocalFilesInFolder,
+  isDirectory,
+} from "@common/utils/fileSystem";
 import {
   getNameWithoutPath,
   getRelativeParentFolderName,
   isFolderName,
 } from "@common/utils/format";
-import {
-  getAllLocalFilesInFolder,
-  isDirectory,
-} from "@common/utils/fileSystem";
+import { uiStateStore } from "@renderer/context";
 import {
   BucketNames,
   FsFolder,
@@ -23,6 +15,28 @@ import {
   FsType,
   isFolder,
 } from "@renderer/types/fs";
+import S3Controller from "@renderer/utils/aws/S3Controller";
+import {
+  getStorageItem,
+  ItemKey,
+  setStorageItem,
+} from "@renderer/utils/localStorage";
+import { action, computed, observable, toJS } from "mobx";
+import { nanoid } from "nanoid";
+import path from "path";
+
+enum TransportState {
+  LOADING = "LOADING",
+  FAILED = "FAILED",
+  SUCCESS = "SUCCESS",
+}
+
+type Transport<T> = T & {
+  id: string;
+  state: TransportState;
+};
+
+type TransportUploadItem = Transport<{ fileName: string }>;
 
 export class S3Store {
   s3Controller: S3Controller;
@@ -34,12 +48,20 @@ export class S3Store {
   }
 
   @observable bucketNames: BucketNames = [];
+  @observable currentBucket: string | null = null;
   @observable currentFolder: FsFolder | null = null;
   @observable downloadPath: string = "";
   fsObjectsInBucket: Map<string, FsObject> | null = null;
   @observable bucketLoading: boolean = false;
-  @observable currentBucket: string | null = null;
   @observable selectedObjects: Array<FsObject> = [];
+  @observable uploadList: Array<TransportUploadItem> = [];
+
+  @computed
+  get uploadingItems() {
+    return this.uploadList.filter(
+      item => item.state === TransportState.LOADING
+    );
+  }
 
   private generateFolder(name: string): FsFolder {
     return {
@@ -126,6 +148,33 @@ export class S3Store {
     return this.getFsObjectsInBucket().has(objectName);
   }
 
+  @action
+  private pushUploadListItem(fileName: string): string {
+    const id = nanoid(10);
+    this.uploadList.push(
+      observable({ fileName, id, state: TransportState.LOADING })
+    );
+    uiStateStore.setSnackbarShown(true);
+    console.log("this.uploadList :", toJS(this.uploadList));
+    return id;
+  }
+
+  @action
+  private setUploadListItemState(id: string, state: TransportState) {
+    const target = this.getUploadListItem(id);
+    target.state = state;
+    console.log("this.uploadList :", toJS(this.uploadList));
+  }
+
+  private getUploadListItem(id: string): TransportUploadItem {
+    const result = this.uploadList.filter(uploadItem => uploadItem.id === id);
+
+    if (result.length > 0) {
+      return result[0];
+    }
+    throw new Error("No upload item in the list");
+  }
+
   private registerFsObject(fsObject: FsObject): void {
     this.getFsObjectsInBucket().set(fsObject.name, observable(fsObject));
   }
@@ -167,11 +216,21 @@ export class S3Store {
     fileName: string,
     uploadTo?: string
   ): Promise<string> => {
-    return this.s3Controller.upload(
-      this.getcurrentBucket(),
-      uploadTo ? uploadTo : this.getCurrentFolder().name,
-      fileName
-    );
+    const listItemId = this.pushUploadListItem(fileName);
+    return this.s3Controller
+      .upload(
+        this.getcurrentBucket(),
+        uploadTo ? uploadTo : this.getCurrentFolder().name,
+        fileName
+      )
+      .then(data => {
+        this.setUploadListItemState(listItemId, TransportState.SUCCESS);
+        return data;
+      })
+      .catch(err => {
+        this.setUploadListItemState(listItemId, TransportState.FAILED);
+        throw new Error(err);
+      });
   };
 
   private uploadFolder = (localFolderPath: string): Promise<string[]> => {

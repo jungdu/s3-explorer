@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { AppContainer } from "react-hot-loader";
 import { ThemeProvider } from "styled-components";
+
 import Application from "./components/Application";
 import { s3, uiState } from "./context";
 import theme from "./theme";

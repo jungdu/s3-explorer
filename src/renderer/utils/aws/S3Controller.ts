@@ -1,22 +1,26 @@
 import { Message } from "@common/types/ipc";
-import { invoke } from "@renderer/utils/ipc";
-import { notUndefined } from "@renderer/utils/typeGuards";
-import AWS from "aws-sdk";
-import S3, { ListBucketsOutput, ListObjectsV2Output } from "aws-sdk/clients/s3";
-import nanoid from "nanoid";
-import path from "path";
 import {
+  getNameWithoutPath,
   getRelativeFileName,
   isFolderName,
-  getNameWithoutPath,
 } from "@common/utils/format";
 import {
   BucketNames,
-  FsObject,
   FsFile,
-  FsType,
   FsFolder,
+  FsObject,
+  FsType,
 } from "@renderer/types/fs";
+import { invoke } from "@renderer/utils/ipc";
+import { notUndefined } from "@renderer/utils/typeGuards";
+import AWS from "aws-sdk";
+import {
+  default as S3,
+  ListBucketsOutput,
+  ListObjectsV2Output,
+} from "aws-sdk/clients/s3";
+import { nanoid } from "nanoid";
+import path from "path";
 
 export default class S3Controller {
   private s3: S3 | null = null;
