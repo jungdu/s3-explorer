@@ -1,6 +1,6 @@
 export enum FsType {
   FILE = "FILE",
-  FOLDER = "FOLDER"
+  FOLDER = "FOLDER",
 }
 
 interface Selectable {

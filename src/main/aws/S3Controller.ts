@@ -1,10 +1,10 @@
+import {
+  getLocalPathWithoutName,
+  getNameWithoutPath,
+} from "@common/utils/format";
 import AWS, { S3 } from "aws-sdk";
 import fs from "fs";
 import path from "path";
-import {
-  getNameWithoutPath,
-  getLocalPathWithoutName,
-} from "@common/utils/format";
 
 export default class S3Controller {
   private s3: S3 | null = null;

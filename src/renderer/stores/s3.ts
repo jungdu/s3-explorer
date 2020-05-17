@@ -15,6 +15,7 @@ import {
   FsType,
   isFolder,
 } from "@renderer/types/fs";
+import { Transport, TransportState } from "@renderer/types/network";
 import S3Controller from "@renderer/utils/aws/S3Controller";
 import {
   getStorageItem,
@@ -25,18 +26,7 @@ import { action, computed, observable, toJS } from "mobx";
 import { nanoid } from "nanoid";
 import path from "path";
 
-enum TransportState {
-  LOADING = "LOADING",
-  FAILED = "FAILED",
-  SUCCESS = "SUCCESS",
-}
-
-type Transport<T> = T & {
-  id: string;
-  state: TransportState;
-};
-
-type TransportUploadItem = Transport<{ fileName: string }>;
+type TransportFsItem = Transport<{ fileName: string }>;
 
 export class S3Store {
   s3Controller: S3Controller;
@@ -53,8 +43,8 @@ export class S3Store {
   @observable downloadPath: string = "";
   fsObjectsInBucket: Map<string, FsObject> | null = null;
   @observable bucketLoading: boolean = false;
-  @observable selectedObjects: Array<FsObject> = [];
-  @observable uploadList: Array<TransportUploadItem> = [];
+  @observable.shallow selectedObjects: Array<FsObject> = [];
+  @observable.shallow uploadList: Array<TransportFsItem> = [];
 
   @computed
   get uploadingItems() {
@@ -151,7 +141,7 @@ export class S3Store {
   @action
   private pushUploadListItem(fileName: string): string {
     const id = nanoid(10);
-    this.uploadList.push(
+    this.uploadList.unshift(
       observable({ fileName, id, state: TransportState.LOADING })
     );
     uiStateStore.setSnackbarShown(true);
@@ -166,7 +156,7 @@ export class S3Store {
     console.log("this.uploadList :", toJS(this.uploadList));
   }
 
-  private getUploadListItem(id: string): TransportUploadItem {
+  private getUploadListItem(id: string): TransportFsItem {
     const result = this.uploadList.filter(uploadItem => uploadItem.id === id);
 
     if (result.length > 0) {
