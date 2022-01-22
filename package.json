@@ -136,7 +136,7 @@
     "aws-sdk": "^2.614.0",
     "mobx": "^5.15.4",
     "mobx-react": "^6.1.7",
-    "nanoid": "^2.1.11",
+    "nanoid": "^3.1.31",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "styled-components": "^5.0.0",
